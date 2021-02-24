@@ -1,0 +1,23 @@
+2021-02-24 21:11:45 INFO     
+Training with Gridsearch with MultiNomialBayes (self implemented)
+Done without stemming
+
+2021-02-24 21:12:54 INFO     vect=CountVectorizer
+2021-02-24 21:12:54 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-24 21:14:23 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-24 21:16:10 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-24 21:17:32 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-24 21:18:27 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-24 21:19:20 INFO     ACC: avg: 0.868, [0.8597, 0.8711, 0.8682, 0.8709, 0.8701]
+2021-02-24 21:19:20 INFO     ERR: avg: 0.132, [0.1403, 0.1289, 0.1318, 0.1291, 0.1299]
+2021-02-24 21:19:20 INFO     vect=TfidfVectorizer
+2021-02-24 21:19:20 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-24 21:20:15 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-24 21:21:13 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-24 21:22:32 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-24 21:24:26 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-24 21:25:45 INFO     ACC: avg: 0.8774, [0.8754, 0.878, 0.8789, 0.8786, 0.8761]
+2021-02-24 21:25:45 INFO     ERR: avg: 0.1226, [0.1246, 0.122, 0.1211, 0.1214, 0.1239]
+2021-02-24 21:25:45 INFO     Training complete!
+2021-02-24 21:25:45 INFO     [('vect=CountVectorizer', ([0.8597, 0.8711, 0.8682, 0.8709, 0.8701], [0.1403, 0.1289, 0.1318, 0.1291, 0.1299])), ('vect=TfidfVectorizer', ([0.8754, 0.878, 0.8789, 0.8786, 0.8761], [0.1246, 0.122, 0.1211, 0.1214, 0.1239]))]
+2021-02-24 21:25:45 INFO     Best result is ('vect=TfidfVectorizer', ([0.8754, 0.878, 0.8789, 0.8786, 0.8761], [0.1246, 0.122, 0.1211, 0.1214, 0.1239]))

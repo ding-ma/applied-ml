@@ -63,7 +63,7 @@ class CrossVal:
         kfold_err = []
         for fold in range(self.n_fold):
             logging.info(
-                "Starting CV {}/{} Train={}, Test={}".format(
+                "Starting 'CV' {}/{} Train={}, Test={}".format(
                     fold,
                     self.n_fold,
                     train_size,
@@ -95,6 +95,8 @@ class CrossVal:
         """
         kfold_acc = []
         kfold_err = []
+
+        model = model()
 
         for x_train, x_test, y_train, y_test in self.__cross_validation_split():
             # todo: might need to use batch trainer

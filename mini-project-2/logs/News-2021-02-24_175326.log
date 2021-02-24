@@ -1,5 +1,5 @@
 2021-02-24 17:53:26 INFO     
-Training with Gridsearch with Bernuilli, (self implemented)
+Training with Gridsearch with Multinomial, (self implemented)
 Done without stemming
 
 2021-02-24 17:53:54 INFO     vect=CountVectorizer

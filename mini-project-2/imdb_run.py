@@ -12,20 +12,20 @@ from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
 from model.Helpers import evaluate_acc, print_acc_err, DATASET_PATH, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
-from  model.NaiveBayes import BernoulliBayes
+from  model.NaiveBayes import BernoulliBayes, MultiNomialBayes
 import sys
 from statistics import mean
 import logging
 
 
-experiment_description = """
-Training with Gridsearch with Bernoulli (self implemented)
-Done without stemming
-"""
-
-MODEL = BernoulliBayes
+MODEL = MultiNomialBayes
 VECTORIZER = TfidfVectorizer()
 
+
+experiment_description = f"""
+Training with Gridsearch with {MODEL.__name__} (self implemented)
+Done without stemming
+"""
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
