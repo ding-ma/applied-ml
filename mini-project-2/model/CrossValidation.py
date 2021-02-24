@@ -83,10 +83,7 @@ class CrossVal:
             model.fit(vectorizer.fit_transform(x_train), y_train)
             y_predict = model.predict(vectorizer.transform(x_test))
             acc = evaluate_acc(y_test, y_predict)
-            try:
-                err = self.loss_fnc(y_test, y_predict)
-            except:
-                err = []
+            err = self.loss_fnc(y_test, y_predict)
             kfold_acc.append(acc)
             kfold_err.append(err)
         return kfold_acc, kfold_err

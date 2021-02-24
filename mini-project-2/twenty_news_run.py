@@ -11,7 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
-from model.Helpers import evaluate_acc, print_acc_err, dataset_path, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
+from model.Helpers import evaluate_acc, print_acc_err, DATASET_PATH, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
 from model.NaiveBayes import MultiNomialBayes
 import sys
 from statistics import mean
@@ -40,7 +40,7 @@ logging.basicConfig(
 
 logging.info(experiment_description)
 
-twenty_news_df = pd.read_csv(dataset_path.joinpath("twenty_news_row_array_bigram.csv"))
+twenty_news_df = pd.read_csv(DATASET_PATH.joinpath("twenty_news_row_array_bigram.csv"))
 twenty_news_df = shuffle(twenty_news_df, random_state=1)
 twenty_news_df["sentence"] = twenty_news_df["sentence"].apply(lambda x: " ".join(eval(x)))
 

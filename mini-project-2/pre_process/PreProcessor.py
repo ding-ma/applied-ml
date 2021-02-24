@@ -56,17 +56,13 @@ class PreProcessor:
         # tokenize the strings into array. makes them lowercase too
         self.df[self.process_column] = self.df[self.process_column].apply(lambda x: self.tokenizer.tokenize(x.lower()))
 
+        # word stemming
+        # self.df[self.process_column] = self.df[self.process_column]
+
         # compute 2 ngrams and check if they are in the list of ngrams
         self.df[self.process_column] = self.df[self.process_column].apply(
             lambda x: x + ["_".join(i) for i in list(ngrams(x, 2)) if "_".join(i) in bigram_series]
         )
-
-        # n-grams
-        # methodology: generate all ngrams then look if they are in this list http://phrasesinenglish.org/explorengrams.html#filterdiv
-        # https://albertauyeung.github.io/2018/06/03/generating-ngrams.html
-        # 'very' 'good'
-        # 'very_good' --> 2-ngrams , post
-        # 'very_bad' --> neg
 
         # remove common stopwords from ntlk library and also some domain specific words
         self.df[self.process_column] = self.df[self.process_column].apply(

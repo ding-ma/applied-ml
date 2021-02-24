@@ -4,7 +4,7 @@ from statistics import mean
 import logging
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-dataset_path = Path("/home/dataset/project2")
+DATASET_PATH = Path("/home/dataset/project2")
 
 LOGISITC_REPEAT_DICT = {
     "train_size": [0.2, 0.4, 0.6, 0.8],
@@ -25,10 +25,7 @@ def evaluate_acc(test, pred):
 
 
 def print_acc_err(res):
-    try:
-        acc = res[0]
-        err = res[1]
-        logging.info("ACC: avg: {}, {}".format(mean(acc), acc))
-        logging.info("ERR: avg: {}, {}".format(mean(err), err))
-    except:
-        pass
+    acc = res[0]
+    err = res[1]
+    logging.info("ACC: avg: {}, {}".format(mean(acc), acc))
+    logging.info("ERR: avg: {}, {}".format(mean(err), err))

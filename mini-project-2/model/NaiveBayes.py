@@ -27,7 +27,6 @@ class BernoulliBayes:
         for element in trainingLabels:
             occurrences[element] += 1
 
-
         # fit parameter matrix with shape (nclasses, nfeatures + 1)
         params = np.zeros((self._nclasses, trainingSet.shape[1] + 1))
 
@@ -57,7 +56,11 @@ class BernoulliBayes:
             np.log(1 - self._fitParams[:, :-1]) @ validationSet.T
         )
 
-        return odds.T
+        predictions = []
+        for example in odds.T:
+            predictions.append(np.argmax(example))
+
+        return predictions
 
 
 class MultiNomialBayes:
@@ -112,4 +115,8 @@ class MultiNomialBayes:
         likelihood = np.log(likelihood) @ validationSet.T
         odds += likelihood
 
-        return odds.T
+        predictions = []
+        for example in odds.T:
+            predictions.append(np.argmax(example))
+
+        return predictions

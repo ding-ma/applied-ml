@@ -11,7 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
-from model.Helpers import evaluate_acc, print_acc_err, dataset_path, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
+from model.Helpers import evaluate_acc, print_acc_err, DATASET_PATH, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
 from  model.NaiveBayes import BernoulliBayes
 import sys
 from statistics import mean
@@ -40,7 +40,7 @@ logging.basicConfig(
 
 logging.info(experiment_description)
 
-imdb_df = pd.read_csv(dataset_path.joinpath("imdb_row_array_bigram.csv"))
+imdb_df = pd.read_csv(DATASET_PATH.joinpath("imdb_row_array_bigram.csv"))
 
 # keep random state so we can have a reproducable result
 imdb_df = shuffle(imdb_df, random_state=1)
