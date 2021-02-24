@@ -83,7 +83,10 @@ class CrossVal:
             model.fit(vectorizer.fit_transform(x_train), y_train)
             y_predict = model.predict(vectorizer.transform(x_test))
             acc = evaluate_acc(y_test, y_predict)
-            err = self.loss_fnc(y_test, y_predict)
+            try:
+                err = self.loss_fnc(y_test, y_predict)
+            except:
+                err = []
             kfold_acc.append(acc)
             kfold_err.append(err)
         return kfold_acc, kfold_err
@@ -101,7 +104,10 @@ class CrossVal:
             model.fit(vectorizer.fit_transform(x_train), y_train)
             y_predict = model.predict(vectorizer.transform(x_test))
             acc = evaluate_acc(y_test, y_predict)
-            err = self.loss_fnc(y_test, y_predict)
+            try:
+                err = self.loss_fnc(y_test, y_predict)
+            except:
+                err = []
             kfold_acc.append(acc)
             kfold_err.append(err)
         return kfold_acc, kfold_err
@@ -127,6 +133,9 @@ class CrossVal:
 
         :rtype: best parameters for the model
         """
+        if "train_size" in parameters:
+            pass
+
         training = []
 
         if model.__name__ == "LogisticRegression":
@@ -139,11 +148,17 @@ class CrossVal:
                             res = self.kfoldCV(model(solver=solver, max_iter=max_itr, tol=tol), vec)
                             print_acc_err(res)
                             training.append((run, res))
-
+                
+        elif "NB" in model.__name__ or "Bayes" in model.__name__ :
+            for vec in parameters['vectorizer']:
+                run = "vect={}".format( type(vec).__name__)
+                logging.info(run)
+                res = self.kfoldCV(model(), vec)
+                print_acc_err(res)
+                training.append((run, res))
         else:
-            # TODO
-            pass
-        
+            raise ValueError("Can only be ran on Naive Bayes or Logistic Regression!")
+            
         logging.info("Training complete!")
         logging.info(training)
         best = max(training,key=lambda x:x[1][0])

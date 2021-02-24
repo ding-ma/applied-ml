@@ -11,37 +11,31 @@ from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
-from model.NaiveBayes import NaiveBayes
-from model.Helpers import evaluate_acc, print_acc_err, dataset_path
+from model.Helpers import evaluate_acc, print_acc_err, dataset_path, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
+from  model.NaiveBayes import BernoulliBayes
 import sys
 from statistics import mean
 import logging
 
 
 experiment_description = """
-Training with Gridsearch with Logisitc Regression
+Training with Gridsearch with Bernoulli (self implemented)
 Done without stemming
 """
 
-MODEL = LogisticRegression
+MODEL = BernoulliBayes
 VECTORIZER = TfidfVectorizer()
 
-REPEAT_DIC ={
-    "train_size": [0.2, 0.4, 0.6, 0.8],
-    "vectorizer": [CountVectorizer(), TfidfVectorizer()],
-    "solver": ["newton-cg", "sag", "saga", "lbfgs"],
-    "max_iteration": [1000, 3000, 9000, 12000],
-    "tol": [1,0.01,0.001]
-}
 
 logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s',
+    format="%(asctime)s %(levelname)-8s %(message)s",
     level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S',
-        handlers=[
-        logging.FileHandler(filename='logs/IMDB-{}.log'.format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
-        logging.StreamHandler(sys.stdout)
-    ])
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(filename="logs/IMDB-{}.log".format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
 
 
 logging.info(experiment_description)
@@ -57,12 +51,10 @@ imdb_df.loc[imdb_df["review_type"] == "neg", "review_type"] = 0
 
 
 # int32 is more memory efficient and enough for our needs
-imdb_df = imdb_df.astype(
-    {"review_id": "int32", "review_type": "int32", "review_number": "int32"}
-)
+imdb_df = imdb_df.astype({"review_id": "int32", "review_type": "int32", "review_number": "int32"})
 
 imdb_df_X = imdb_df["sentence"]
 imdb_df_y = imdb_df["review_type"]
 
 imdb_CV = CrossVal(imdb_df_X, imdb_df_y)
-imdb_CV.repeat(MODEL, REPEAT_DIC)
+imdb_CV.repeat(MODEL, NAIVE_BAYES_REPEAT_DICT)

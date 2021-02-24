@@ -18,3 +18,8 @@ COMP 551 - Applied Machine Learning (Winter 2021)
 All the dataset are located at `/home/dataset`. There is a dataset folder for each project. 
 * If there is a permission denied issue, make sure to run `sudo chmod -R 777 /home/dataset`. 
 * If you create new dataset files, run `sudo chmod -R 777 /home/dataset`.
+
+## Running a task in background
+1. `python script_name.py &`
+1. `disown -h`
+1. Close your terminal and go Zzzz

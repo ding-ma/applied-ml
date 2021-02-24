@@ -11,39 +11,32 @@ from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
-from model.Helpers import evaluate_acc, print_acc_err, dataset_path
+from model.Helpers import evaluate_acc, print_acc_err, dataset_path, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
+from model.NaiveBayes import MultiNomialBayes
 import sys
 from statistics import mean
 import logging
 
 
 experiment_description = """
-Training with Gridsearch with Logisitc Regression
+Training with Gridsearch with Bernuilli, (self implemented)
 Done without stemming
 """
 
 
-MODEL = LogisticRegression
+MODEL = MultiNomialBayes
 VECTORIZER = TfidfVectorizer()
-
-REPEAT_DIC ={
-    "train_size": [0.2, 0.4, 0.6, 0.8],
-    "vectorizer": [CountVectorizer(), TfidfVectorizer()],
-    "solver": ["newton-cg", "sag", "saga", "lbfgs"],
-    "max_iteration": [1000, 3000, 9000, 12000],
-    "tol": [1,0.01,0.001]
-}
-
 
 
 logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s',
+    format="%(asctime)s %(levelname)-8s %(message)s",
     level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S',
-        handlers=[
-        logging.FileHandler(filename='logs/News-{}.log'.format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
-        logging.StreamHandler(sys.stdout)
-    ])
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(filename="logs/News-{}.log".format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
 
 logging.info(experiment_description)
 
@@ -55,4 +48,4 @@ twenty_news_df_X = twenty_news_df["sentence"]
 twenty_news_df_y = twenty_news_df["target"]
 
 twenty_CV = CrossVal(twenty_news_df_X, twenty_news_df_y)
-twenty_CV.repeat(MODEL, REPEAT_DIC)
+twenty_CV.repeat(MODEL, NAIVE_BAYES_REPEAT_DICT)
