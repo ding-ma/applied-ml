@@ -62,5 +62,5 @@ class NaiveBayes:
         log_likelihood = np.sum(log_likelihood, axis=2)
         # posterior calculation
         log_posterior = log_prior + log_likelihood
-        posterior = np.exp(log_posterior - logsumexp(log_posterior))
+        posterior = np.exp(log_posterior - self.logsumexp(log_posterior))
         return posterior.T  # dimension N x C

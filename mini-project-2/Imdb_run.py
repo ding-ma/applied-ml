@@ -11,6 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
+from model.NaiveBayes import NaiveBayes
 from model.Helpers import evaluate_acc, print_acc_err, dataset_path
 import sys
 from statistics import mean
@@ -18,18 +19,27 @@ import logging
 
 
 experiment_description = """
-in this we ran.....
-
+Training with Gridsearch with Logisitc Regression
+Done without stemming
 """
 
+MODEL = LogisticRegression
+VECTORIZER = TfidfVectorizer()
 
+REPEAT_DIC ={
+    "train_size": [0.2, 0.4, 0.6, 0.8],
+    "vectorizer": [CountVectorizer(), TfidfVectorizer()],
+    "solver": ["newton-cg", "sag", "saga", "lbfgs"],
+    "max_iteration": [1000, 3000, 9000, 12000],
+    "tol": [1,0.01,0.001]
+}
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S',
         handlers=[
-        logging.FileHandler(filename='logs/IMDB-{}.log'.format(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))),
+        logging.FileHandler(filename='logs/IMDB-{}.log'.format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
         logging.StreamHandler(sys.stdout)
     ])
 
@@ -54,6 +64,5 @@ imdb_df = imdb_df.astype(
 imdb_df_X = imdb_df["sentence"]
 imdb_df_y = imdb_df["review_type"]
 
-imdb_df_CV = CrossVal(imdb_df_X, imdb_df_y)
-res = imdb_df_CV.kfoldCV(MultinomialNB(), TfidfVectorizer())
-print_acc_err(res)
+imdb_CV = CrossVal(imdb_df_X, imdb_df_y)
+imdb_CV.repeat(MODEL, REPEAT_DIC)

@@ -18,25 +18,36 @@ import logging
 
 
 experiment_description = """
-in this we ran.....
-
+Training with Gridsearch with Logisitc Regression
+Done without stemming
 """
 
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.FileHandler(filename="logs/twenty_news-{}.log".format(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))),
-        logging.StreamHandler(sys.stdout),
-    ],
-)
+MODEL = LogisticRegression
+VECTORIZER = TfidfVectorizer()
 
+REPEAT_DIC ={
+    "train_size": [0.2, 0.4, 0.6, 0.8],
+    "vectorizer": [CountVectorizer(), TfidfVectorizer()],
+    "solver": ["newton-cg", "sag", "saga", "lbfgs"],
+    "max_iteration": [1000, 3000, 9000, 12000],
+    "tol": [1,0.01,0.001]
+}
+
+
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S',
+        handlers=[
+        logging.FileHandler(filename='logs/News-{}.log'.format(datetime.now().strftime("%Y-%m-%d_%H%M%S"))),
+        logging.StreamHandler(sys.stdout)
+    ])
 
 logging.info(experiment_description)
 
-twenty_news_df = pd.read_csv("dataset/twenty_news_row_array_bigram.csv")
+twenty_news_df = pd.read_csv(dataset_path.joinpath("twenty_news_row_array_bigram.csv"))
 twenty_news_df = shuffle(twenty_news_df, random_state=1)
 twenty_news_df["sentence"] = twenty_news_df["sentence"].apply(lambda x: " ".join(eval(x)))
 
@@ -44,5 +55,4 @@ twenty_news_df_X = twenty_news_df["sentence"]
 twenty_news_df_y = twenty_news_df["target"]
 
 twenty_CV = CrossVal(twenty_news_df_X, twenty_news_df_y)
-res = twenty_CV.kfoldCV(MultinomialNB(), CountVectorizer())
-print_acc_err(res)
+twenty_CV.repeat(MODEL, REPEAT_DIC)

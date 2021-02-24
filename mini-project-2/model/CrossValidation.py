@@ -10,7 +10,8 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
-from .Helpers import evaluate_acc
+from .Helpers import evaluate_acc, print_acc_err
+import multiprocessing
 
 from statistics import mean
 import logging
@@ -87,7 +88,7 @@ class CrossVal:
             kfold_err.append(err)
         return kfold_acc, kfold_err
 
-    def kfoldCV(self, model, vectorizer, **kwargs):
+    def kfoldCV(self, model, vectorizer):
         """
         model: NB, LR. your model needs to have fit and predict as functions at least
         vectorizer: CV, TFIDF
@@ -105,13 +106,46 @@ class CrossVal:
             kfold_err.append(err)
         return kfold_acc, kfold_err
 
-    def repeat(self, **kwargs):
-        """
-        *args, **kwargs
+    def repeat(self, model, parameters):
+        """ Description: performs grid search on the given parameters
 
-        pseudo: sklearn gridsearchcv
+        :param model: Naive Bayes or Logistic regression (un-initialized!)
+        :param parameters: Dictionary of various parameters as array
+            NaiveBayes: 
+            {
+                train_size: [list],
+                vectorizer: [CountVect, TFIDF]
+            }
+            LR: 
+            {
+                train_size: [list, between 0 and 1 excluded],
+                vectorizer: [CountVect, TFIDF],
+                solver: ["newton-cg", "sag", "saga"],
+                max_iteration: [ints],
+                tol: [list]
+            }
 
-        self === this in java
+        :rtype: best parameters for the model
         """
-        # done in yyscratch
-        pass
+        training = []
+
+        if model.__name__ == "LogisticRegression":
+            for max_itr in parameters['max_iteration']:
+                for solver in parameters['solver']:
+                    for vec in parameters['vectorizer']:
+                        for tol in parameters['tol']:
+                            run = "max_itr={}, solver={}, vect={}, tol={}".format(max_itr, solver, type(vec).__name__, tol)
+                            logging.info(run)
+                            res = self.kfoldCV(model(solver=solver, max_iter=max_itr, tol=tol), vec)
+                            print_acc_err(res)
+                            training.append((run, res))
+
+        else:
+            # TODO
+            pass
+        
+        logging.info("Training complete!")
+        logging.info(training)
+        best = max(training,key=lambda x:x[1][0])
+        logging.info(f"Best result is {best}")
+        return best
