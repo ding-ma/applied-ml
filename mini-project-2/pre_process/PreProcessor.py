@@ -6,11 +6,15 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.util import ngrams
+from nltk.stem.snowball import SnowballStemmer
+
 
 dataset_path = Path("/home/dataset/project2")
 dataset_path.mkdir(exist_ok=True, parents=True)
 
 nltk.download("stopwords")
+stemmer = SnowballStemmer("english")
+
 
 bigram_series = pd.read_html(dataset_path.joinpath("bigrams.html"))[1]
 bigram_series[0] = bigram_series[0].astype(str)
@@ -56,8 +60,8 @@ class PreProcessor:
         # tokenize the strings into array. makes them lowercase too
         self.df[self.process_column] = self.df[self.process_column].apply(lambda x: self.tokenizer.tokenize(x.lower()))
 
-        # word stemming
-        # self.df[self.process_column] = self.df[self.process_column]
+        # word stemming see: https://www.nltk.org/howto/stem.html
+        self.df[self.process_column] = self.df[self.process_column].apply(lambda x: [stemmer.stem(i) for i in x])
 
         # compute 2 ngrams and check if they are in the list of ngrams
         self.df[self.process_column] = self.df[self.process_column].apply(
@@ -72,7 +76,7 @@ class PreProcessor:
         #################################################################
 
         self.df.to_csv(
-            dataset_path.joinpath("{}_row_array_bigram.csv".format(self.f_name)),
+            dataset_path.joinpath("{}_row_array_stemmed.csv".format(self.f_name)),
             index=False,
         )
 
@@ -80,7 +84,7 @@ class PreProcessor:
         self.exp_df = self.df.explode(self.process_column)
         self.exp_df.reset_index(inplace=True, drop=True)
         self.exp_df.to_csv(
-            dataset_path.joinpath("{}_exploded_bigram.csv".format(self.f_name)),
+            dataset_path.joinpath("{}_exploded_stemmed.csv".format(self.f_name)),
             index=False,
         )
 

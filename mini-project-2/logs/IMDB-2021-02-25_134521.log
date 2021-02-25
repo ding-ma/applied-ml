@@ -1,0 +1,11 @@
+2021-02-25 13:45:21 INFO     
+Stemmed without bigrams
+LogisticRegression(max_itr=12000, solver='sag', tol=0.001), CountVectorizer()
+
+2021-02-25 13:45:45 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-25 13:46:47 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-25 13:47:55 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-25 13:48:58 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-25 13:49:58 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-25 13:51:03 INFO     ACC: avg: 0.88792, [0.8855, 0.8893, 0.8853, 0.8877, 0.8918]
+2021-02-25 13:51:03 INFO     ERR: avg: 0.11208, [0.1145, 0.1107, 0.1147, 0.1123, 0.1082]

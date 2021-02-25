@@ -7,7 +7,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 DATASET_PATH = Path("/home/dataset/project2")
 
 LOGISITC_REPEAT_DICT = {
-    "train_size": [0.2, 0.4, 0.6, 0.8],
     "vectorizer": [CountVectorizer(), TfidfVectorizer()],
     "solver": ["newton-cg", "sag", "saga", "lbfgs"],
     "max_iteration": [1000, 3000, 9000, 12000],

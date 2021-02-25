@@ -90,7 +90,7 @@ class CrossVal:
 
     def kfoldCV(self, model, vectorizer):
         """
-        model: NB, LR. your model needs to have fit and predict as functions at least (un-initialized!)
+        model: NB, LR. your model needs to have fit
         vectorizer: CV, TFIDF
         """
         kfold_acc = []
@@ -116,12 +116,10 @@ class CrossVal:
         :param parameters: Dictionary of various parameters as array
             NaiveBayes: 
             {
-                train_size: [list],
                 vectorizer: [CountVect, TFIDF]
             }
             LR: 
             {
-                train_size: [list, between 0 and 1 excluded],
                 vectorizer: [CountVect, TFIDF],
                 solver: ["newton-cg", "sag", "saga"],
                 max_iteration: [ints],
@@ -130,8 +128,6 @@ class CrossVal:
 
         :rtype: best parameters for the model
         """
-        if "train_size" in parameters:
-            pass
 
         training = []
 

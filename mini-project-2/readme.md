@@ -1,9 +1,10 @@
 # Tracker
 
 ## 5-CrossValidation
-* Done without Lammetization 
 
+### With Bigrams
 
+#### IMDB
 |Model                            |Accuracy|Error  |Params                                                    |
 |---------------------------------|--------|-------|----------------------------------------------------------|
 |logistic regression              |0.90436 |0.09564|max_itr=12000, solver=sag, vect=CountVectorizer, tol=0.001|
@@ -14,7 +15,7 @@
 
 
 
-### Twenty News
+#### Twenty News
 
 |Model                            |Accuracy|Error  |Params                                                    |
 |---------------------------------|--------|-------|----------------------------------------------------------|
@@ -22,12 +23,43 @@
 |Multinomial NB (self implemented)|0.670808223|17.04542762|vect=TfidfVectorizer                                      |
 |Bernouilli NB (self implemented) |0.118125571|48.01189101|vect=TfidfVectorizer                                      |
 |Multinomial NB (sklearn)         |0.680995984|16.60193371|vect=TfidfVectorizer                                      |
-|Bernouilli NB (sklearn)          |0.441739225|23.82703331|Both                                                      |
+|Bernouilli NB (sklearn)          |0.441739225|23.82703331|vect=TfidfVectorizer and vect=CountVectorizer             |
+
+* logistic regression grid search took over 24h!
 
 
+### With Stemmed words and bigrams
+
+#### IMDB
+|Model                           |Accuracy|Error  |Params                                                    |
+|--------------------------------|--------|-------|----------------------------------------------------------|
+|logistic regression             |0.89758 |0.10242|max_itr=12000, solver=sag, vect=CountVectorizer, tol=0.001|
+|Bernouilli NB (self implemented)|0.8698  |0.1302 |vect=TfidfVectorizer                                      |
+
+#### Twenty News
+|Model                            |Accuracy   |Error      |Params              |
+|---------------------------------|-----------|-----------|--------------------|
+|logistic regression              |           |           |                    |
+|Multinomial NB (self implemented)|0.670968163|17.25376865|vect=TfidfVectorizer|
 
 
-## Custom Train size CV
+### With Stemmed words without bigrams
+
+#### IMDB
+|Model                           |Accuracy|Error  |Params                                                    |
+|--------------------------------|--------|-------|----------------------------------------------------------|
+|logistic regression             |0.88792 |0.11208|max_itr=12000, solver=sag, vect=CountVectorizer, tol=0.001|
+|Bernouilli NB (self implemented)|0.86106 |0.13894|vect=TfidfVectorizer                                      |
+
+
+#### Twenty News
+|Model                            |Accuracy   |Error      |Params              |
+|---------------------------------|-----------|-----------|--------------------|
+|logistic regression              |           |           |                    |
+|Multinomial NB (self implemented)|0.707474781|15.70895216|vect=TfidfVectorizer|
+
+
+## Custom Train Size CV
 We randomly sampled 5 times in the dataset for each training iteration. Between each interations, some datapoints might be used more than once for taining/testing.
 But overall it should provide a good picture of the accuracy at each training size. 
 
@@ -46,8 +78,3 @@ But overall it should provide a good picture of the accuracy at each training si
 |0.4       |                              |                           |0.637778564              |18.5126636            |
 |0.6       |                              |                           |0.663810029              |17.11430088           |
 |0.8       |                              |                           |0.678906872              |16.45709737           |
-
-
-## Future Ideas if time permits
-* Try with lammetization
-Just thinking to run with the best results shown above as we are restricted in time.

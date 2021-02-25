@@ -1,0 +1,11 @@
+2021-02-25 15:24:31 INFO     
+Stemmed with bigrams
+BernoulliBayes(), TfidfVectorizer()
+
+2021-02-25 15:25:33 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-25 15:26:23 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-25 15:27:09 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-25 15:27:56 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-25 15:28:45 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-25 15:29:32 INFO     ACC: avg: 0.8698, [0.8643, 0.873, 0.8704, 0.872, 0.8693]
+2021-02-25 15:29:32 INFO     ERR: avg: 0.1302, [0.1357, 0.127, 0.1296, 0.128, 0.1307]

@@ -25,8 +25,8 @@ VECTORIZER = TfidfVectorizer()
 
 
 experiment_description = f"""
-Testing with different training size
-LogisticRegression(max_itr=12000, solver='sag', tol=0.001), CountVectorizer()
+Stemmed without bigrams
+BernoulliBayes(), TfidfVectorizer()
 """
 
 logging.basicConfig(
@@ -42,7 +42,7 @@ logging.basicConfig(
 
 logging.info(experiment_description)
 
-imdb_df = pd.read_csv(DATASET_PATH.joinpath("imdb_row_array_bigram.csv"))
+imdb_df = pd.read_csv(DATASET_PATH.joinpath("imdb_row_array_stemmed.csv"))
 
 # keep random state so we can have a reproducable result
 imdb_df = shuffle(imdb_df, random_state=1)
@@ -59,4 +59,5 @@ imdb_df_X = imdb_df["sentence"]
 imdb_df_y = imdb_df["review_type"]
 
 imdb_CV = CrossVal(imdb_df_X, imdb_df_y)
-imdb_CV.repeat_custom_size(LogisticRegression(max_iter=12000, solver='sag', tol=0.001), CountVectorizer())
+res = imdb_CV.kfoldCV(BernoulliBayes(), TfidfVectorizer())
+print_acc_err(res)
