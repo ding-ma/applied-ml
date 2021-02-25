@@ -6,7 +6,7 @@ import itertools
 from random import randrange
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.utils import shuffle
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
@@ -18,12 +18,14 @@ from statistics import mean
 import logging
 
 
-MODEL = BernoulliBayes
+MODEL = MultinomialNB
+
+# only needed for kCV
 VECTORIZER = TfidfVectorizer()
 
 experiment_description = f"""
-Training with Gridsearch with {MODEL.__name__} (self implemented)
-Done without stemming
+Testing with different training size
+MultiNomialBayes(), TfidfVectorizer()
 """
 
 logging.basicConfig(
@@ -46,4 +48,4 @@ twenty_news_df_X = twenty_news_df["sentence"]
 twenty_news_df_y = twenty_news_df["target"]
 
 twenty_CV = CrossVal(twenty_news_df_X, twenty_news_df_y)
-twenty_CV.repeat(MODEL, NAIVE_BAYES_REPEAT_DICT)
+twenty_CV.repeat_custom_size(MultiNomialBayes(), TfidfVectorizer())

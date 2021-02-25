@@ -6,7 +6,7 @@ import itertools
 from random import randrange
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.utils import shuffle
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from datetime import datetime
 from backports.zoneinfo import ZoneInfo
@@ -18,13 +18,15 @@ from statistics import mean
 import logging
 
 
-MODEL = MultiNomialBayes
+MODEL = MultinomialNB
+
+# only needed for kCV
 VECTORIZER = TfidfVectorizer()
 
 
 experiment_description = f"""
-Training with Gridsearch with {MODEL.__name__} (self implemented)
-Done without stemming
+Testing with different training size
+LogisticRegression(max_itr=12000, solver='sag', tol=0.001), CountVectorizer()
 """
 
 logging.basicConfig(
@@ -57,4 +59,4 @@ imdb_df_X = imdb_df["sentence"]
 imdb_df_y = imdb_df["review_type"]
 
 imdb_CV = CrossVal(imdb_df_X, imdb_df_y)
-imdb_CV.repeat(MODEL, NAIVE_BAYES_REPEAT_DICT)
+imdb_CV.repeat_custom_size(LogisticRegression(max_iter=12000, solver='sag', tol=0.001), CountVectorizer())

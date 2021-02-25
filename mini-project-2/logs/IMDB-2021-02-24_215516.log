@@ -1,0 +1,23 @@
+2021-02-24 21:55:16 INFO     
+Training with Gridsearch with BernoulliNB (sklearn)
+Done without stemming
+
+2021-02-24 21:56:26 INFO     vect=CountVectorizer
+2021-02-24 21:56:26 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-24 21:57:18 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-24 21:58:14 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-24 21:59:21 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-24 22:00:14 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-24 22:01:07 INFO     ACC: avg: 0.86296, [0.8581, 0.8632, 0.8636, 0.8669, 0.863]
+2021-02-24 22:01:07 INFO     ERR: avg: 0.13704, [0.1419, 0.1368, 0.1364, 0.1331, 0.137]
+2021-02-24 22:01:07 INFO     vect=TfidfVectorizer
+2021-02-24 22:01:07 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-24 22:02:00 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-24 22:02:54 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-24 22:03:49 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-24 22:04:46 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-24 22:05:41 INFO     ACC: avg: 0.86296, [0.8581, 0.8632, 0.8636, 0.8669, 0.863]
+2021-02-24 22:05:41 INFO     ERR: avg: 0.13704, [0.1419, 0.1368, 0.1364, 0.1331, 0.137]
+2021-02-24 22:05:41 INFO     Training complete!
+2021-02-24 22:05:41 INFO     [('vect=CountVectorizer', ([0.8581, 0.8632, 0.8636, 0.8669, 0.863], [0.1419, 0.1368, 0.1364, 0.1331, 0.137])), ('vect=TfidfVectorizer', ([0.8581, 0.8632, 0.8636, 0.8669, 0.863], [0.1419, 0.1368, 0.1364, 0.1331, 0.137]))]
+2021-02-24 22:05:41 INFO     Best result is ('vect=CountVectorizer', ([0.8581, 0.8632, 0.8636, 0.8669, 0.863], [0.1419, 0.1368, 0.1364, 0.1331, 0.137]))

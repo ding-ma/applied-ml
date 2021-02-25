@@ -74,11 +74,11 @@ class CrossVal:
             test_set = combined.sample(frac=(1 - train_size))
             train_set = combined[~combined.isin(test_set)].dropna()
 
-            x_train = train_set["X"].to_numpy()
-            x_test = test_set["X"].to_numpy()
+            x_train = train_set["X"]
+            x_test = test_set["X"]
 
-            y_train = train_set["y"].to_numpy()
-            y_test = test_set["y"].to_numpy()
+            y_train = train_set["y"].astype(int)
+            y_test = test_set["y"].astype(int)
 
             model.fit(vectorizer.fit_transform(x_train), y_train)
             y_predict = model.predict(vectorizer.transform(x_test))
@@ -90,13 +90,11 @@ class CrossVal:
 
     def kfoldCV(self, model, vectorizer):
         """
-        model: NB, LR. your model needs to have fit and predict as functions at least
+        model: NB, LR. your model needs to have fit and predict as functions at least (un-initialized!)
         vectorizer: CV, TFIDF
         """
         kfold_acc = []
         kfold_err = []
-
-        model = model()
 
         for x_train, x_test, y_train, y_test in self.__cross_validation_split():
             # todo: might need to use batch trainer
@@ -162,4 +160,23 @@ class CrossVal:
         logging.info(training)
         best = max(training,key=lambda x:x[1][0])
         logging.info(f"Best result is {best}")
+        
         return best
+    
+    def repeat_custom_size(self, model, vect):
+        """
+        Use the best hyper parameters from repeat and we can test on various train size [0.2, 0.4, 0.6, 0.8]
+        :param model with hyperparameters already initialized
+        :vect CountVectorizer or Tfidf
+        """
+        
+        training = []
+        for train_size in [0.2, 0.4, 0.6, 0.8]:
+            res = self.kfoldCV_custom_size(model, vect, train_size)
+            print_acc_err(res)
+            training.append((str(train_size), res))
+        
+        logging.info("Training complete!")
+        logging.info(training)
+        
+        return training
