@@ -1,0 +1,4 @@
+2021-02-25 22:42:10 INFO     
+Testing Logistic regression on custom train size
+max_itr=9000, solver=saga, vect=TfidfVectorizer, tol=0.01
+

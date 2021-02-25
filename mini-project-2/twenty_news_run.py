@@ -24,8 +24,8 @@ MODEL = MultinomialNB
 VECTORIZER = TfidfVectorizer()
 
 experiment_description = f"""
-Testing with Stemmed words with bigrams, k=5 CV
-MultiNomialBayes(), TfidfVectorizer()
+twenty_news_row_array_bigram.csv
+max_iter=9000, solver=saga, vect=TfidfVectorizer, tol=0.01
 """
 
 logging.basicConfig(
@@ -40,7 +40,7 @@ logging.basicConfig(
 
 logging.info(experiment_description)
 
-twenty_news_df = pd.read_csv(DATASET_PATH.joinpath("twenty_news_row_array_bigram_stemmed.csv"))
+twenty_news_df = pd.read_csv(DATASET_PATH.joinpath("twenty_news_row_array_stemmed.csv"))
 twenty_news_df = shuffle(twenty_news_df, random_state=1)
 twenty_news_df["sentence"] = twenty_news_df["sentence"].apply(lambda x: " ".join(eval(x)))
 
@@ -48,5 +48,5 @@ twenty_news_df_X = twenty_news_df["sentence"]
 twenty_news_df_y = twenty_news_df["target"]
 
 twenty_CV = CrossVal(twenty_news_df_X, twenty_news_df_y)
-res = twenty_CV.kfoldCV(MultiNomialBayes(), TfidfVectorizer())
+res = twenty_CV.kfoldCV(LogisticRegression(solver='saga' , max_iter=9000, tol=0.01), TfidfVectorizer())
 print_acc_err(res)
