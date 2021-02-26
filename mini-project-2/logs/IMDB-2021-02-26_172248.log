@@ -1,0 +1,11 @@
+2021-02-26 17:22:48 INFO     
+Only word tokenization, no other cleaning
+LogisticRegression(max_itr=12000, solver='sag', tol=0.001), CountVectorizer()
+
+2021-02-26 17:23:13 INFO     Starting CV 0/5 Test_Set[0:10000]
+2021-02-26 17:23:54 INFO     Starting CV 1/5 Test_Set[10000:20000]
+2021-02-26 17:24:38 INFO     Starting CV 2/5 Test_Set[20000:30000]
+2021-02-26 17:25:18 INFO     Starting CV 3/5 Test_Set[30000:40000]
+2021-02-26 17:26:01 INFO     Starting CV 4/5 Test_Set[40000:50000]
+2021-02-26 17:26:43 INFO     ACC: avg: 0.89514, [0.8948, 0.8962, 0.8955, 0.8917, 0.8975]
+2021-02-26 17:26:43 INFO     ERR: avg: 0.10486, [0.1052, 0.1038, 0.1045, 0.1083, 0.1025]

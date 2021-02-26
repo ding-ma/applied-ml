@@ -2,7 +2,7 @@
 
 ## 5-CrossValidation
 
-### With Bigrams
+### With Bigrams and without stemming
 
 #### IMDB
 |Model                            |Accuracy|Error  |Params                                                    |
@@ -27,7 +27,7 @@
 * logistic regression grid search took over 30h+!
 
 
-### With Stemmed words and bigrams
+### With bigrams and with Stemming
 
 #### IMDB
 |Model                           |Accuracy|Error  |Params                                                    |
@@ -42,7 +42,7 @@
 |Multinomial NB (self implemented)|0.670968163|17.25376865|vect=TfidfVectorizer|
 
 
-### With Stemmed words without bigrams
+### Without bigrams and with Stemming
 
 #### IMDB
 |Model                           |Accuracy|Error  |Params                                                    |
@@ -56,6 +56,25 @@
 |---------------------------------|-----------|-----------|--------------------|
 |logistic regression              |  0.733102575         |  14.86355119         | max_iter=9000, solver=saga, vect=TfidfVectorizer, tol=0.01                   |
 |Multinomial NB (self implemented)|0.707474781|15.70895216|vect=TfidfVectorizer|
+
+
+### No Cleaning
+#### IMDB
+
+|Model                           |Accuracy|Error  |Params                                                    |
+|--------------------------------|--------|-------|----------------------------------------------------------|
+|logistic regression             |0.89514 |0.10486|max_itr=12000, solver=sag, vect=CountVectorizer, tol=0.001|
+|logistic regression             |0.89702 |0.10298|max_itr=12000, solver=sag, vect=TfidfVectorizer, tol=0.001|
+|Bernouilli NB (self implemented)|0.86598 |0.13402|vect=TfidfVectorizer                                      |
+|Bernouilli NB (self implemented)|0.5     |0.5    |vect=CountVectorizer                                      |
+
+#### Twenty News
+|Model                           |Accuracy|Error  |Params                                                    |
+|--------------------------------|--------|-------|----------------------------------------------------------|
+|logistic regression             |0.729441759|15.33095596|max_iter=9000, solver=saga, vect=TfidfVectorizer, tol=0.01|
+|logistic regression             |0.079803575|73.41170554|max_iter=9000, solver=saga, vect=CountVect , tol=0.01     |
+|Multinomial NB (self implemented)|0.661892882|17.91229254|vect=TfidfVectorizer                                      |
+|Multinomial NB (self implemented)|0.347445566|40.38422442|vect=CountVectorizer                                      |
 
 
 ## Custom Train Size CV
