@@ -38,7 +38,7 @@
 #### Twenty News
 |Model                            |Accuracy   |Error      |Params              |
 |---------------------------------|-----------|-----------|--------------------|
-|logistic regression              |    0.89758      | 0.10242           | max_itr=12000, solver=sag, vect=CountVectorizer, tol=0.001                   |
+|logistic regression              |    0.734801990728154      | 15.355526214587874           | max_iter=9000, solver=saga, vect=TfidfVectorizer, tol=0.01                   |
 |Multinomial NB (self implemented)|0.670968163|17.25376865|vect=TfidfVectorizer|
 
 
