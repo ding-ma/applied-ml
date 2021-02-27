@@ -9,114 +9,135 @@ import logging
 
 
 class BernoulliBayes:
-    _smoothing = 1.0
-    _nclasses = 0
-    _fitParams = None
-    _encoder = LabelEncoder()
+    _alpha = 1.
+    _num_classes = 0
+    _fit = None
 
-    def __init__(self, smoothing=1.0):
-        self._smoothing = smoothing
+    def __init__(self, alpha=1):
+        self._alpha = alpha
 
-    def fit(self, trainingSet, trainingLabels):
+    def fit(self, train_x, train_y):
 
-        self._nclasses = np.amax(trainingLabels) + 1
+        self._num_classes = np.amax(train_y) + 1
 
-        # generates list containing a count of each class occurrence
-        occurrences = [0] * self._nclasses
+        # intialization of list containing count of occurrences of each class
+        class_count =  self._num_classes*[0]
 
-        for element in trainingLabels:
-            occurrences[element] += 1
+        #count occurences of each class
+        for i in train_y:
+            class_count[i] = 1 + class_count[i]
 
-        # fit parameter matrix with shape (nclasses, nfeatures + 1)
-        params = np.zeros((self._nclasses, trainingSet.shape[1] + 1))
+        #initialization of matrix
+        fit = np.zeros((self._num_classes, train_x.shape[1] + 1))
 
-        # fills params with # of feature occurrences per class then divides by # of class occurrences
-        for i in range(self._nclasses):
-            for n, element in enumerate(trainingLabels):
+
+        # fills matrix with # of feature occurrences per class then divides by # of class occurrences
+        for i in range(self._num_classes):
+            for n, element in enumerate(train_y):
                 if element == i:
-                    params[i, :-1] += trainingSet[n]
-            params[i, :-1] = (params[i, :-1] + self._smoothing) / (float(occurrences[i]) + 2.0 * self._smoothing)
-            params[i, -1] = occurrences[i] / trainingSet.shape[0]
+                    fit[i, :-1] = train_x[n] + fit[i, :-1]
+            likelihood = (fit[i, :-1] + self._alpha)/(float(class_count[i]) + 2. * self._alpha)
+            fit[i, :-1] = likelihood
+            prior = class_count[i]/train_x.shape[0]
+            fit[i, -1] = prior
 
-        self._fitParams = params
+        self._fit = fit
 
-    def predict(self, validationSet):
+    def predict(self,val_x, val_y):
 
-        # ###############predicit###############
-        # creating a log odds matrix
-        odds = np.zeros((self._nclasses, validationSet.shape[0]), dtype=np.float32)
+        res = np.zeros((self._num_classes, val_x.shape[0]), dtype=np.float32)
 
         # adding class prior probability
-        for Class in range(self._nclasses):
-            log_neg = 1 - self._fitParams[Class, -1]
-            odds[Class] += np.log(self._fitParams[Class, -1] / log_neg)
+        for C in range(self._num_classes):
+            log_neg = 1 - self._fit[C, -1]
+            prior = self._fit[C, -1]
 
-        odds += np.log(self._fitParams[:, :-1]) @ validationSet.T
-        odds += (np.log(1 - self._fitParams[:, :-1]).sum(axis=1).reshape((-1, 1))) - (
-            np.log(1 - self._fitParams[:, :-1]) @ validationSet.T
-        )
+            res[C] += np.log(prior/log_neg)
 
-        predictions = []
-        for example in odds.T:
-            predictions.append(np.argmax(example))
+        likelihood = self._fit[:, :-1]
+        res += np.log(likelihood) @ val_x.T
+        res += (np.log(1 - likelihood).sum(axis=1).reshape((-1, 1))) - (np.log(1 - likelihood) @ val_x.T)
 
-        return predictions
+
+        return res.T
+
+        # print(res.T)
+        # print("what is this", self._fit[:, :-1])
+
+        # predictions = []
+        # for example in res.T:
+        #     predictions.append(np.argmax(example))
+
+        # return predictions
+        # print("predictions", predictions)
+
+        # print("accuracy: " + str(np.sum(predictions == val_y)/len(predictions)))
+
 
 
 class MultiNomialBayes:
-    _smoothing = 1.0
-    _nclasses = 0
-    _fitParams = None
-    _encoder = LabelEncoder()
+    _alpha = 1.
+    _num_classes = 0
+    _fit = None
 
-    def __init__(self, smoothing=1.0):
-        self._smoothing = smoothing
+    def __init__(self, alpha=1):
+        self._alpha = alpha
 
-    def fit(self, trainingSet, trainingLabels):
+    def fit(self, train_x, train_y):
 
-        # _nclasses is C in TA's code
-        self._nclasses = np.amax(trainingLabels) + 1
+        #_num_classes is C in TA's code
+        self._num_classes = np.amax(train_y) + 1
+
 
         # generates list containing a count of each class occurrence
-        # occurences is Nc in TA's code
-        occurrences = [0] * self._nclasses
+        #occurences is Nc in TA's code
+        class_count = self._num_classes*[0] 
 
-        for element in trainingLabels:
-            occurrences[element] += 1
+        for i in train_y:
+            class_count[i] = 1 + class_count[i]
 
-        params = np.zeros((self._nclasses, trainingSet.shape[1] + 1))
+        fit = np.zeros((self._num_classes, train_x.shape[1]+1))
 
-        # fills params with # of feature occurrences per class then divides by # of class occurrences
-        for i in range(self._nclasses):
-            for n, element in enumerate(trainingLabels):
+        # print(class_count)
+
+        # fills matrix with # of feature occurrences per class then divides by # of class occurrences
+        for i in range(self._num_classes):
+            for n, element in enumerate(train_y):
                 if element == i:
-                    params[i, :-1] += trainingSet[n]
-            # filling likelihoods for each entry
-            params[i, :-1] = ((params[i, :-1]) + self._smoothing) / (
-                float(occurrences[i]) + trainingSet.shape[1] * self._smoothing
-            )
-            # inserting prior in the last column of the array
-            params[i, -1] = occurrences[i] / trainingSet.shape[0]
+                    fit[i, :-1] = train_x[n] + fit[i, :-1]
 
-        self._fitParams = params
+            #filling likelihoods for each entry
+            likelihood = ((fit[i, :-1]) + self._alpha)/(float(class_count[i]) + train_x.shape[1]*self._alpha)
+            fit[i, :-1] = likelihood
+            #inserting prior in the last column of the array
+            prior = class_count[i]/train_x.shape[0]
+            fit[i, -1] = prior
 
-    def predict(self, validationSet):
+        
+        self._fit = fit
 
-        # creating a log odds matrix
-        odds = np.zeros((self._nclasses, validationSet.shape[0]), dtype=np.float32)
 
-        # adding class prior probability
-        for Class in range(self._nclasses):
-            prior = self._fitParams[Class, -1]
-            prior_neg = 1 - prior
+    def predict(self, val_x, val_y):
+        #initializing matrix D*C
+        res = np.zeros((self._num_classes, val_x.shape[0]), dtype=np.float32)
+
+
+        for C in range(self._num_classes):
+            prior = self._fit[C, -1]
+            # prior_neg = 1 - prior
             prior = np.log(prior)
-            odds[Class] += prior
-        likelihood = self._fitParams[:, :-1]
-        likelihood = np.log(likelihood) @ validationSet.T
-        odds += likelihood
+            res[C] += prior
+        likelihood = self._fit[:, :-1]
+        likelihood = np.log(likelihood) @ val_x.T
+        res += likelihood 
 
-        predictions = []
-        for example in odds.T:
-            predictions.append(np.argmax(example))
 
-        return predictions
+        return res.T
+
+        # predictions = []
+        # for example in res.T:
+        #     predictions.append(np.argmax(example))
+
+        # print("predictions", predictions)
+
+        # print("accuracy: " + str(np.sum(predictions == val_y)/len(predictions)))
