@@ -14,9 +14,7 @@ LOGISITC_REPEAT_DICT = {
 }
 
 
-NAIVE_BAYES_REPEAT_DICT = {
-        "vectorizer": [CountVectorizer(), TfidfVectorizer()]
-}
+NAIVE_BAYES_REPEAT_DICT = {"vectorizer": [CountVectorizer(), TfidfVectorizer()]}
 
 
 def evaluate_acc(test, pred):

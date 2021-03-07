@@ -1,6 +1,12 @@
 # applied-ml
 COMP 551 - Applied Machine Learning (Winter 2021)
 
+## Projects
+1. KNN and Decision Tree on cancer data
+1. Naive Bayes and Linear Regression on text data
+1. Multilayer Perceptron on MNIST
+
+
 ## To SSH onto the VM
 1. Create your ssh public and private key.
 1. Upload your public ssh key to GCP

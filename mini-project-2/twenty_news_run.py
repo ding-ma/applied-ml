@@ -12,7 +12,7 @@ from datetime import datetime
 from backports.zoneinfo import ZoneInfo
 from model.CrossValidation import CrossVal
 from model.Helpers import evaluate_acc, print_acc_err, DATASET_PATH, NAIVE_BAYES_REPEAT_DICT, LOGISITC_REPEAT_DICT
-from  model.NaiveBayes import BernoulliBayes, MultiNomialBayes
+from model.NaiveBayes import BernoulliBayes, MultiNomialBayes
 import sys
 from statistics import mean
 import logging

@@ -110,15 +110,15 @@ class CrossVal:
         return kfold_acc, kfold_err
 
     def repeat(self, model, parameters):
-        """ Description: performs grid search on the given parameters
+        """Description: performs grid search on the given parameters
 
         :param model: Naive Bayes or Logistic regression (un-initialized!)
         :param parameters: Dictionary of various parameters as array
-            NaiveBayes: 
+            NaiveBayes:
             {
                 vectorizer: [CountVect, TFIDF]
             }
-            LR: 
+            LR:
             {
                 vectorizer: [CountVect, TFIDF],
                 solver: ["newton-cg", "sag", "saga"],
@@ -132,47 +132,49 @@ class CrossVal:
         training = []
 
         if model.__name__ == "LogisticRegression":
-            for max_itr in parameters['max_iteration']:
-                for solver in parameters['solver']:
-                    for vec in parameters['vectorizer']:
-                        for tol in parameters['tol']:
-                            run = "max_itr={}, solver={}, vect={}, tol={}".format(max_itr, solver, type(vec).__name__, tol)
+            for max_itr in parameters["max_iteration"]:
+                for solver in parameters["solver"]:
+                    for vec in parameters["vectorizer"]:
+                        for tol in parameters["tol"]:
+                            run = "max_itr={}, solver={}, vect={}, tol={}".format(
+                                max_itr, solver, type(vec).__name__, tol
+                            )
                             logging.info(run)
                             res = self.kfoldCV(model(solver=solver, max_iter=max_itr, tol=tol), vec)
                             print_acc_err(res)
                             training.append((run, res))
-                
-        elif "NB" in model.__name__ or "Bayes" in model.__name__ :
-            for vec in parameters['vectorizer']:
-                run = "vect={}".format( type(vec).__name__)
+
+        elif "NB" in model.__name__ or "Bayes" in model.__name__:
+            for vec in parameters["vectorizer"]:
+                run = "vect={}".format(type(vec).__name__)
                 logging.info(run)
                 res = self.kfoldCV(model(), vec)
                 print_acc_err(res)
                 training.append((run, res))
         else:
             raise ValueError("Can only be ran on Naive Bayes or Logistic Regression!")
-            
+
         logging.info("Training complete!")
         logging.info(training)
-        best = max(training,key=lambda x:x[1][0])
+        best = max(training, key=lambda x: x[1][0])
         logging.info(f"Best result is {best}")
-        
+
         return best
-    
+
     def repeat_custom_size(self, model, vect):
         """
         Use the best hyper parameters from repeat and we can test on various train size [0.2, 0.4, 0.6, 0.8]
         :param model with hyperparameters already initialized
         :vect CountVectorizer or Tfidf
         """
-        
+
         training = []
         for train_size in [0.2, 0.4, 0.6, 0.8]:
             res = self.kfoldCV_custom_size(model, vect, train_size)
             print_acc_err(res)
             training.append((str(train_size), res))
-        
+
         logging.info("Training complete!")
         logging.info(training)
-        
+
         return training

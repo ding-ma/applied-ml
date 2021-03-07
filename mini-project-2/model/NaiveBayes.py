@@ -9,7 +9,7 @@ import logging
 
 
 class BernoulliBayes:
-    _alpha = 1.
+    _alpha = 1.0
     _num_classes = 0
     _fit = None
 
@@ -21,29 +21,28 @@ class BernoulliBayes:
         self._num_classes = np.amax(train_y) + 1
 
         # intialization of list containing count of occurrences of each class
-        class_count =  self._num_classes*[0]
+        class_count = self._num_classes * [0]
 
-        #count occurences of each class
+        # count occurences of each class
         for i in train_y:
             class_count[i] = 1 + class_count[i]
 
-        #initialization of matrix
+        # initialization of matrix
         fit = np.zeros((self._num_classes, train_x.shape[1] + 1))
-
 
         # fills matrix with # of feature occurrences per class then divides by # of class occurrences
         for i in range(self._num_classes):
             for n, element in enumerate(train_y):
                 if element == i:
                     fit[i, :-1] = train_x[n] + fit[i, :-1]
-            likelihood = (fit[i, :-1] + self._alpha)/(float(class_count[i]) + 2. * self._alpha)
+            likelihood = (fit[i, :-1] + self._alpha) / (float(class_count[i]) + 2.0 * self._alpha)
             fit[i, :-1] = likelihood
-            prior = class_count[i]/train_x.shape[0]
+            prior = class_count[i] / train_x.shape[0]
             fit[i, -1] = prior
 
         self._fit = fit
 
-    def predict(self,val_x, val_y):
+    def predict(self, val_x, val_y):
 
         res = np.zeros((self._num_classes, val_x.shape[0]), dtype=np.float32)
 
@@ -52,12 +51,11 @@ class BernoulliBayes:
             log_neg = 1 - self._fit[C, -1]
             prior = self._fit[C, -1]
 
-            res[C] += np.log(prior/log_neg)
+            res[C] += np.log(prior / log_neg)
 
         likelihood = self._fit[:, :-1]
         res += np.log(likelihood) @ val_x.T
         res += (np.log(1 - likelihood).sum(axis=1).reshape((-1, 1))) - (np.log(1 - likelihood) @ val_x.T)
-
 
         return res.T
 
@@ -74,9 +72,8 @@ class BernoulliBayes:
         # print("accuracy: " + str(np.sum(predictions == val_y)/len(predictions)))
 
 
-
 class MultiNomialBayes:
-    _alpha = 1.
+    _alpha = 1.0
     _num_classes = 0
     _fit = None
 
@@ -85,18 +82,17 @@ class MultiNomialBayes:
 
     def fit(self, train_x, train_y):
 
-        #_num_classes is C in TA's code
+        # _num_classes is C in TA's code
         self._num_classes = np.amax(train_y) + 1
 
-
         # generates list containing a count of each class occurrence
-        #occurences is Nc in TA's code
-        class_count = self._num_classes*[0] 
+        # occurences is Nc in TA's code
+        class_count = self._num_classes * [0]
 
         for i in train_y:
             class_count[i] = 1 + class_count[i]
 
-        fit = np.zeros((self._num_classes, train_x.shape[1]+1))
+        fit = np.zeros((self._num_classes, train_x.shape[1] + 1))
 
         # print(class_count)
 
@@ -106,21 +102,18 @@ class MultiNomialBayes:
                 if element == i:
                     fit[i, :-1] = train_x[n] + fit[i, :-1]
 
-            #filling likelihoods for each entry
-            likelihood = ((fit[i, :-1]) + self._alpha)/(float(class_count[i]) + train_x.shape[1]*self._alpha)
+            # filling likelihoods for each entry
+            likelihood = ((fit[i, :-1]) + self._alpha) / (float(class_count[i]) + train_x.shape[1] * self._alpha)
             fit[i, :-1] = likelihood
-            #inserting prior in the last column of the array
-            prior = class_count[i]/train_x.shape[0]
+            # inserting prior in the last column of the array
+            prior = class_count[i] / train_x.shape[0]
             fit[i, -1] = prior
 
-        
         self._fit = fit
 
-
     def predict(self, val_x, val_y):
-        #initializing matrix D*C
+        # initializing matrix D*C
         res = np.zeros((self._num_classes, val_x.shape[0]), dtype=np.float32)
-
 
         for C in range(self._num_classes):
             prior = self._fit[C, -1]
@@ -129,8 +122,7 @@ class MultiNomialBayes:
             res[C] += prior
         likelihood = self._fit[:, :-1]
         likelihood = np.log(likelihood) @ val_x.T
-        res += likelihood 
-
+        res += likelihood
 
         return res.T
 

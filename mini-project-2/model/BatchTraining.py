@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class BatchTraining:
     """
     Batch training allows user to save memory by recycling the same variables.
@@ -32,8 +33,6 @@ class BatchTraining:
         :return: (X_test_batch, y_test_batch)
         """
         for idx in range(len(self)):
-            batch_x = self.vectorizer.transform(
-                self.X[idx * self.batch_size : (idx + 1) * self.batch_size]
-            ).toarray()
+            batch_x = self.vectorizer.transform(self.X[idx * self.batch_size : (idx + 1) * self.batch_size]).toarray()
             batch_y = self.y[idx * self.batch_size : (idx + 1) * self.batch_size]
             yield batch_x, batch_y
