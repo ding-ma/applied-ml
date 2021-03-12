@@ -1,7 +1,7 @@
 # Useful links
 * [Writeup](https://mcgill-my.sharepoint.com/:w:/g/personal/ding_ma_mail_mcgill_ca/EWxUNSKCE5ZNsm0SmyEly9UBCVJkxfkar4Hx5oq8EvcPuA?e=RGdVWb)
 * [Prof code repo](https://github.com/mravanba/comp551-notebooks)
-
+* adding `#%%` to a line in VS Code will make that file into a Jupyter Notebook
 
 # Experiments to run
 1. > First of all, create three different models: (1) an MLP with no hidden layers, i.e., it directly maps the inputs to outputs, (2) an MLP with a single hidden layer having 128 units and ReLU activations, (3) an MLP with 2 hidden layers each having 128 units with ReLU activations. It should be noted that since we want to perform classification, all of these models should have a softmax layer at the end. After training, compare the test accuracy of these three models on the MNIST dataset. Comment on how non-linearity and network depth effects the accuracy. Are the results that you obtain expected?

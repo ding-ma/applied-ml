@@ -1,5 +1,5 @@
 from model.MLP import MLP
-from utils.utils import evaluate_acc
+from utils.utils import evaluate_acc, RUN_DATE
 import logging
 import sys
 from datetime import datetime
@@ -37,7 +37,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
         # TODO: uncooment when ready to run real tests
-        logging.FileHandler(filename="logs/{}-{}.log".format(datetime.now().strftime("%Y-%m-%d_%H%M%S"), file_name)),
+        logging.FileHandler(filename=f"logs/{RUN_DATE}-{file_name}.log"),
         logging.StreamHandler(sys.stdout),
     ],
 )
@@ -47,3 +47,4 @@ logging.info(experiment_description)
 
 # TODO: add kFold CV
 model = MLP(**MLP_params)
+model.fit(1, 2, 3, 4)
