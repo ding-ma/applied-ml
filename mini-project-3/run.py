@@ -21,42 +21,43 @@ data_preprocess_params = {
     "augment_data": {"rotate": True, "shift": True, "zoom": True, "shear": True, "all": True},
 }
 
+if __name__ == "__main__":
+    
+    # turn lambda into string
+    params_to_log = MLP_params
+    params_to_log["activation_fnc"] = ":".join(
+        inspect.getsourcelines(MLP_params["activation_fnc"])[0][0].strip().split(":")[1:]
+    )
 
-# turn lambda into string
-params_to_log = MLP_params
-params_to_log["activation_fnc"] = ":".join(
-    inspect.getsourcelines(MLP_params["activation_fnc"])[0][0].strip().split(":")[1:]
-)
+    experiment_description = f"""
+    some description about your experiment
 
-experiment_description = f"""
-some description about your experiment
+    Experiment Parameters
+    {params_to_log}
 
-Experiment Parameters
-{params_to_log}
+    Preprocess Parameters
+    {data_preprocess_params}
+    """
 
-Preprocess Parameters
-{data_preprocess_params}
-"""
-
-file_name = ""  # optional
-
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        # TODO: uncooment when ready to run real tests
-        # logging.FileHandler(filename=f"logs/{RUN_DATE}-{file_name}.log"),
-        logging.StreamHandler(sys.stdout),
-    ],
-)
+    file_name = ""  # optional
 
 
-logging.info(experiment_description)
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)-8s %(message)s",
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[
+            # TODO: uncooment when ready to run real tests
+            # logging.FileHandler(filename=f"logs/{RUN_DATE}-{file_name}.log"),
+            logging.StreamHandler(sys.stdout),
+        ],
+    )
 
-# TODO: add kFold CV
-train, test = aquire_data(**data_preprocess_params)
 
-# model = MLP(**MLP_params)
-# model.fit(1, 2, 3, 4)
+    logging.info(experiment_description)
+
+    # TODO: add kFold CV
+    train, test = aquire_data(**data_preprocess_params)
+
+    # model = MLP(**MLP_params)
+    # model.fit(1, 2, 3, 4)
