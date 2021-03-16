@@ -55,8 +55,8 @@ def aquire_data(threshold, augment_data):
     X_train, X_test = X_train.astype("float32") / 255, X_test.astype("float32") / 255
 
     # augment data!
-    # train_generator = chain(zip(X_train, y_train))
-    train_generator = chain()
+    train_generator = chain(zip(X_train, y_train))
+    # train_generator = chain()
     if augment_data.get("rotate", None):
         train_generator = chain(train_generator, __rotate_image(X_train, y_train))
 
