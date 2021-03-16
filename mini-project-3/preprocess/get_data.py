@@ -45,14 +45,15 @@ def __apply_all_augmentation(X_train, y_train):
     return __apply_generator(img_gen, X_train, y_train)
 
 
-def aquire_data(threshold, augment_data):
+def aquire_data(threshold, normalize, augment_data):
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     X_train = X_train.reshape((X_train.shape[0], 28, 28, 1))
     X_test = X_test.reshape((X_test.shape[0], 28, 28, 1))
 
-    # convert from int to float and normalize
-    X_train, X_test = X_train.astype("float32") / 255, X_test.astype("float32") / 255
+    if normalize:
+        # convert from int to float and normalize
+        X_train, X_test = X_train.astype("float32") / 255, X_test.astype("float32") / 255
 
     # augment data!
     train_generator = chain(zip(X_train, y_train))

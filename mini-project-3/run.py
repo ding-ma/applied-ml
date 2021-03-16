@@ -18,6 +18,7 @@ MLP_params = {
 
 data_preprocess_params = {
     "threshold": True,
+    "normalize": True,
     "augment_data": {"rotate": True, "shift": True, "zoom": True, "shear": True, "all": True},
 }
 
