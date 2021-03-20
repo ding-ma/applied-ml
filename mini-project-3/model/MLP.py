@@ -89,8 +89,8 @@ class MLP:
         self.train_acc = []
         self.test_acc = []
 
-    def fit(self, X, y, n_epochs):
-        n_iterations = int(X.shape[0] / self.batch_size)
+    def fit(self, x_train, y_train, x_test, y_test, n_epochs=50):
+        n_iterations = int(x_train.shape[0] / self.batch_size)
 
         for epoch in range(n_epochs):
             curr_index = 0
@@ -99,8 +99,8 @@ class MLP:
             for itr in range(n_iterations):
 
                 # mini batch split
-                x_slice = X[curr_index : curr_index + self.batch_size]
-                y_slice = y[curr_index : curr_index + self.batch_size]
+                x_slice = x_train[curr_index : curr_index + self.batch_size]
+                y_slice = y_train[curr_index : curr_index + self.batch_size]
                 self.n_data = x_slice.shape[0]
 
                 # index calculation for batches
@@ -135,61 +135,40 @@ class MLP:
                 delta[range(self.n_data), y_slice] -= 1
 
                 # backprob and update weights
-                # not back prob properly
-
-                # dW = (self.layers[-1].a.T).dot(delta)
-                # db = np.sum(delta, axis=0, keepdims=True)
-
                 for i in range(self.n_hidden_layers, 0, -1):
                     # print(i, self.layers[i-1].activation_fnc)
-                    self.layers[i].dW  = (self.layers[i-1].a.T).dot(delta)
+                    self.layers[i].dW = (self.layers[i - 1].a.T).dot(delta)
                     self.layers[i].db = np.sum(delta, axis=0, keepdims=True)
                     delta = delta.dot(self.layers[i].W.T) * self.layers[i].activation_fnc.gradient(
-                        self.layers[i-1].a
+                        self.layers[i - 1].a
                     )
-                    self.layers[i].dW +=  self.reg_lambda * self.layers[i].W 
-                    self.layers[i].W += - learn_rate * self.layers[i].dW 
-                    self.layers[i].b +=  - learn_rate * self.layers[i].db
-                
+                    self.layers[i].dW += self.reg_lambda * self.layers[i].W
+                    self.layers[i].W += -learn_rate * self.layers[i].dW
+                    self.layers[i].b += -learn_rate * self.layers[i].db
+
                 self.layers[0].dW = np.dot(x_slice.T, delta)
                 self.layers[0].db = np.sum(delta, axis=0)
-                self.layers[0].dW +=  self.reg_lambda * self.layers[0].W 
-                self.layers[0].W += - learn_rate * self.layers[0].dW 
-                self.layers[0].b +=  - learn_rate * self.layers[0].db
-                
-                    
+                self.layers[0].dW += self.reg_lambda * self.layers[0].W
+                self.layers[0].W += -learn_rate * self.layers[0].dW
+                self.layers[0].b += -learn_rate * self.layers[0].db
 
-
-                    # if i ==0: 
-                    #     dW = (self.layers[i].x_slice.T).dot(delta)
-                    # else:
-                    #     dW = (self.layers[i].a.T).dot(delta)
-                    # db = np.sum(delta, axis=0, keepdims=True)
-                
-                
-         
-
-                    # self.layers[i].dW =  self.reg_lambda * self.layers[i].W +dW
-                    # self.layers[i].W = self.layers[i].W - learn_rate * dW
-                    # self.layers[i].b = self.layers[i].b - learn_rate * db
-                
-                if itr % 2000 == 1999:
+                if itr % 2000 == 0:
                     loss = self.__cross_entropy(x_slice, y_slice)
                     running_loss += loss
                     logging.info(f"Loss at epoch {epoch}, iteration {itr}, loss {loss}")
 
-            # TODO: fix hardcoded
-            # loss_items = running_loss / int(n_iterations / 50)
-            # logging.info(f"Loss at epoch {epoch}, {loss_items}")
-            # self.loss_hist.append((epoch, loss_items))
 
-            # train_acc = self.__compute_train_acc(X, y)
-            # logging.info(f"Train accurary({train_acc}) at epoch {epoch}")
-            # self.train_acc.append((epoch, train_acc))
+            loss_items = running_loss / int(n_iterations / 2000)
+            logging.info(f"Loss at epoch {epoch}, {loss_items}")
+            self.loss_hist.append((epoch, loss_items))
 
-            # test_acc = self.__compute_test_acc(X, y)
-            # logging.info(f"Test accurary({test_acc}) at epoch {epoch}")
-            # self.test_acc.append((epoch, test_acc))
+            train_acc = self.evaluate_acc(self.predict(x_train), y_train)
+            logging.info(f"Train accurary({train_acc}) at epoch {epoch}")
+            self.train_acc.append((epoch, train_acc))
+
+            test_acc = self.evaluate_acc(self.predict(x_test), y_test)
+            logging.info(f"Test accurary({test_acc}) at epoch {epoch}")
+            self.test_acc.append((epoch, test_acc))
 
     def __compute_probs(self, X):
 
@@ -219,7 +198,7 @@ class MLP:
         Add layer starting from the input layer
         """
         self.layers.append(layer)
-        self.n_hidden_layers = len(self.layers) -1
+        self.n_hidden_layers = len(self.layers) - 1
 
     def __cross_entropy(self, X, y):
 
@@ -229,17 +208,16 @@ class MLP:
         # Compute cross-entropy loss
         loss = np.sum(-np.log(initial_probs[range(self.n_data), y]))
 
-
         # regularization
         loss += (self.reg_lambda / 2) * (np.sum(np.square(self.layers[0].W)))
 
         for layer in self.layers[1:]:
-            loss += np.sum(np.square(layer.W)) 
-        
+            loss += np.sum(np.square(layer.W))
+
         out = (1 / self.n_data) * loss
         return out
 
-    def __compute_train_acc(self, X, y):
+    def __compute_acc(self, X, y):
         correct = 0
         total = 0
         for i in range(X.shape[0]):
@@ -248,6 +226,3 @@ class MLP:
                 correct += 1
             total += 1
         return 100 * correct / total
-
-    def __compute_test_acc(self):
-        pass
