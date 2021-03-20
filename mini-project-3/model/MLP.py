@@ -172,7 +172,7 @@ class MLP:
         loss = np.sum(-np.log(initial_probs[range(self.n_data), y]))
 
         # regularization
-        loss += self.layer[0].W * (self.reg_lambda / 2)
+        loss += self.layers[0].W * (self.reg_lambda / 2)
 
         for layer in self.layers[1:]:
             loss += (np.sum(np.square(layer.W)))
