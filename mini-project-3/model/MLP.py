@@ -2,7 +2,6 @@
 import joblib
 from datetime import datetime
 from pathlib import Path
-from utils.utils import RUN_DATE
 import numpy as np
 import logging
 
@@ -43,28 +42,21 @@ class ReLU():
 class MLP:
     def __init__(
         self,
-        n_hidden_layers=1,
         n_iterations=1000,
         base_learn_rate=0.01,
-        hidden1_activation=None,
-        hidden2_activation=None,
         output_activation=None,
         batch_size=10,
         reg_lambda=1e-2,
         anneal=True,
     ):
-        self.n_hidden_layers = n_hidden_layers
         self.n_iterations = n_iterations
         self.base_learn_rate = base_learn_rate
         self.batch_size = 10
-        self.hidden1_activation = hidden1_activation
-        self.hidden2_activation = hidden2_activation
         self.output_activation = output_activation
         self.reg_lambda = reg_lambda
         self.anneal = anneal
 
         self.layers = []
-        self.verbose = verbose
         self.model = {}
         self.loss_hist = []
         self.train_acc = []
@@ -72,7 +64,7 @@ class MLP:
 
     def fit(self, X, y, n_epochs):
         self.n_data = X.shape[0]
-        n_iterations = int(n_data / self.batch_size)
+        n_iterations = int(self.n_data / self.batch_size)
 
         for epoch in range(n_epochs):
             curr_index = 0
@@ -105,30 +97,35 @@ class MLP:
                 # forward prob
                 for layer in self.layers:
                     q = x_slice.dot(layer.W) + layer.b
-                    z = layer.activation_fnc(z)
+                    z = layer.activation_fnc(q)
+                    
                     layer.q = q
                     layer.z = z
 
                 # z as out of scope it takes the last value
                 # softmax output
-                probs = Softmax(z)
+                soft = Softmax()
+                probs = soft(z)
                 delta = probs
-                delta[range(self.n_data), y_slice] -= 1
+                delta -= 1
+                # print(delta)
 
+# delta[range(self.n_data), y_slice] -= 1
                 # backprob and update weights
                 for layer in reversed(self.layers):
                     # this might be reversed
-                    dW = (layer.a.T).dot(delta)
+                    dW = (layer.z.T).dot(delta)
                     db = np.sum(delta, axis=0, keepdims=True)
+                    # TODO: bug need the previous a not the current one.
                     delta = delta.dot(layer.W.T) * \
-                                      (1 - np.power(layer.q, 2))  # tanh gradient
+                                      (1 - np.power(layer.z, 2))  # tanh gradient
 
                     layer.dW = self.reg_lambda * layer.W + dW
                     layer.W += -learn_rate * layer.dW
                     layer.b += -learn_rate * layer.db
 
                 if not itr % 2000:
-                    loss = self.cross_entropy(x_slice, y_slice)
+                    loss = self.__cross_entropy(x_slice, y_slice)
                     running_loss += loss
                     logging.info(
                         f"Loss at epoch {epoch}, iteration {itr}, loss {loss}")
@@ -156,13 +153,17 @@ class MLP:
     def predict(self, X):
         return np.argmax(self.__compute_probs(X), axis=1)
 
+    # Compute model label prediction accuracy on all 50,000 train images
+    def evaluate_acc(test, pred):
+        return np.sum(pred == test)/test.shape[0]
+
     def add_layer(self, layer: Layer):
         """
         Add layer starting from the input layer
         """
         self.layers.append(layer)
 
-    def cross_entropy(self, X, y):
+    def __cross_entropy(self, X, y):
 
         # power = np.exp(self.layers[-1].z)
         initial_probs = self.__compute_probs(X)
@@ -174,8 +175,7 @@ class MLP:
         loss += self.layer[0].W * (self.reg_lambda / 2)
 
         for layer in self.layers[1:]:
-            loss += (np.sum(np.square(layer.W))
+            loss += (np.sum(np.square(layer.W)))
         
-        out = ((1 / self.n_data) * loss)
-        return out
+        return (1 / self.n_data) * loss
 
