@@ -1,4 +1,4 @@
-from model.MLP import MLP, Layer, Softmax, ReLU
+from model.MLP import MLP, Layer, Softmax, ReLU, TanH
 from utils.utils import evaluate_acc, RUN_DATE
 
 import sys
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     np.random.seed(0)
 
     mlp = MLP()
-    input_hidden_1 = Layer(784, 128, ReLU())
+    input_hidden_1 = Layer(784, 128, TanH())
     hidden_1_output = Layer(128, 10, Softmax())
 
     mlp.add_layer(input_hidden_1)

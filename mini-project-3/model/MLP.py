@@ -136,19 +136,42 @@ class MLP:
 
                 # backprob and update weights
                 # not back prob properly
-                dW = (self.layers[-1].a.T).dot(delta)
-                db = np.sum(delta, axis=0, keepdims=True)
+
+                # dW = (self.layers[-1].a.T).dot(delta)
+                # db = np.sum(delta, axis=0, keepdims=True)
 
                 for i in range(self.n_hidden_layers, 0, -1):
-                    dW = (self.layers[i - 1].a.T).dot(delta)
-                    db = np.sum(delta, axis=0, keepdims=True)
+                    # print(i, self.layers[i-1].activation_fnc)
+                    self.layers[i].dW  = (self.layers[i-1].a.T).dot(delta)
+                    self.layers[i].db = np.sum(delta, axis=0, keepdims=True)
                     delta = delta.dot(self.layers[i].W.T) * self.layers[i].activation_fnc.gradient(
-                        self.layers[i - 1].a
+                        self.layers[i-1].a
                     )
+                    self.layers[i].dW +=  self.reg_lambda * self.layers[i].W 
+                    self.layers[i].W += - learn_rate * self.layers[i].dW 
+                    self.layers[i].b +=  - learn_rate * self.layers[i].db
+                
+                self.layers[0].dW = np.dot(x_slice.T, delta)
+                self.layers[0].db = np.sum(delta, axis=0)
+                self.layers[0].dW +=  self.reg_lambda * self.layers[0].W 
+                self.layers[0].W += - learn_rate * self.layers[0].dW 
+                self.layers[0].b +=  - learn_rate * self.layers[0].db
+                
+                    
 
-                    self.layers[i].dW = dW + self.reg_lambda * self.layers[i].W
-                    self.layers[i].W = self.layers[i].W - learn_rate * dW
-                    self.layers[i].b = self.layers[i].b - learn_rate * db
+
+                    # if i ==0: 
+                    #     dW = (self.layers[i].x_slice.T).dot(delta)
+                    # else:
+                    #     dW = (self.layers[i].a.T).dot(delta)
+                    # db = np.sum(delta, axis=0, keepdims=True)
+                
+                
+         
+
+                    # self.layers[i].dW =  self.reg_lambda * self.layers[i].W +dW
+                    # self.layers[i].W = self.layers[i].W - learn_rate * dW
+                    # self.layers[i].b = self.layers[i].b - learn_rate * db
                 
                 if itr % 2000 == 1999:
                     loss = self.__cross_entropy(x_slice, y_slice)
