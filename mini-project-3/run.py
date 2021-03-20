@@ -1,4 +1,4 @@
-from model.MLP import MLP
+from model.MLP import MLP, Layer, Softmax, Relu
 from utils.utils import evaluate_acc, RUN_DATE
 import logging
 import sys
@@ -8,13 +8,7 @@ from preprocess.get_data import aquire_data
 
 
 # make sure this dictionary has the same variable names as the constructor of MLP
-MLP_params = {
-    "activation_fnc": lambda x: x + 1,
-    "weight": 20000,
-    "bias": 0.001,
-    "n_hidden_layers": 2,
-    "n_units_hidden_layers": 64,
-}
+
 
 data_preprocess_params = {
     "threshold": True,
@@ -25,10 +19,10 @@ data_preprocess_params = {
 if __name__ == "__main__":
     
     # turn lambda into string
-    params_to_log = MLP_params
-    params_to_log["activation_fnc"] = ":".join(
-        inspect.getsourcelines(MLP_params["activation_fnc"])[0][0].strip().split(":")[1:]
-    )
+    # params_to_log = MLP_params
+    # params_to_log["activation_fnc"] = ":".join(
+    #     inspect.getsourcelines(MLP_params["activation_fnc"])[0][0].strip().split(":")[1:]
+    # )
 
     experiment_description = f"""
     some description about your experiment
@@ -60,5 +54,5 @@ if __name__ == "__main__":
     # TODO: add kFold CV
     train, test = aquire_data(**data_preprocess_params)
 
-    # model = MLP(**MLP_params)
-    # model.fit(1, 2, 3, 4)
+    input_layer = Layer(28*28, 256, Relu())
+    hidden_layer = Layer(256, 10, Softmax())
