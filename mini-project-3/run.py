@@ -68,16 +68,16 @@ if __name__ == "__main__":
     train_array = x_train.reshape(x_train.shape[0], 28 * 28)  # 60,000 X 28 x 28 x 1
     test_array = x_test.reshape(x_test.shape[0], 28 * 28)
 
-    np.random.seed(0)
 
-    mlp = MLP()
+#     mlp = MLP(batch_size=10,base_learn_rate=0.008, reg_lambda=0.7)
+    mlp = MLP(batch_size=2,base_learn_rate=0.08, reg_lambda=0.7)
     input_hidden_1 = Layer(784, 256, TanH())
     hidden_1_output = Layer(256, 10, Softmax())
-
+    
     mlp.add_layer(input_hidden_1)
     mlp.add_layer(hidden_1_output)
 
-    mlp.fit(train_array, y_train, test_array, y_test, 50)
+    mlp.fit(train_array, y_train, test_array, y_test, n_epochs=40)
 
     y_pred = mlp.predict(test_array)
     logging.info(f"accuracy {evaluate_acc(y_pred, y_test)}")

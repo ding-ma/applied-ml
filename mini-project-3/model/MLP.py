@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 import logging
 
+np.random.seed(0)
 
 class Layer:
     def __init__(self, input_dim, output_dim, activation_fnc):
@@ -73,7 +74,7 @@ class MLP:
         self,
         base_learn_rate=0.01,
         output_activation=None,
-        batch_size=2,
+        batch_size=4,
         reg_lambda=1e-2,
         anneal=True,
     ):
@@ -89,7 +90,7 @@ class MLP:
         self.train_acc = []
         self.test_acc = []
 
-    def fit(self, x_train, y_train, x_test, y_test, n_epochs=50):
+    def fit(self, x_train, y_train, x_test=None, y_test=None, n_epochs=50):
         n_iterations = int(x_train.shape[0] / self.batch_size)
 
         for epoch in range(n_epochs):
@@ -121,36 +122,30 @@ class MLP:
                 else:
                     learn_rate = self.base_learn_rate
 
-                # forward prob
-                z = x_slice.dot(self.layers[0].W) + self.layers[0].b
-                a = self.layers[0].activation_fnc(z)
-                self.layers[0].a = a
-                for layer in self.layers[1:]:
-                    z = a.dot(layer.W) + layer.b
-                    a = layer.activation_fnc(z)
-                    layer.a = a
+                
+                z1 = x_slice.dot(self.layers[0].W) + self.layers[0].b
+                a1 = self.layers[0].activation_fnc(z1)
+                
+                z2 = a1.dot(self.layers[1].W) + self.layers[1].b
+                delta = self.layers[1].activation_fnc(z2)
 
-                probs = layer.activation_fnc(z)
-                delta = probs
-                delta[range(self.n_data), y_slice] -= 1
+                delta[range(self.n_data), y_slice] -=1
 
-                # backprob and update weights
-                for i in range(self.n_hidden_layers, 0, -1):
-                    # print(i, self.layers[i-1].activation_fnc)
-                    self.layers[i].dW = (self.layers[i - 1].a.T).dot(delta)
-                    self.layers[i].db = np.sum(delta, axis=0, keepdims=True)
-                    delta = delta.dot(self.layers[i].W.T) * self.layers[i].activation_fnc.gradient(
-                        self.layers[i - 1].a
-                    )
-                    self.layers[i].dW += self.reg_lambda * self.layers[i].W
-                    self.layers[i].W += -learn_rate * self.layers[i].dW
-                    self.layers[i].b += -learn_rate * self.layers[i].db
+                dW2 = (a1.T).dot(delta)
+                db2 = np.sum(delta, axis=0, keepdims=True)
 
-                self.layers[0].dW = np.dot(x_slice.T, delta)
-                self.layers[0].db = np.sum(delta, axis=0)
-                self.layers[0].dW += self.reg_lambda * self.layers[0].W
-                self.layers[0].W += -learn_rate * self.layers[0].dW
-                self.layers[0].b += -learn_rate * self.layers[0].db
+                delta = delta.dot(self.layers[1].W.T) * self.layers[0].activation_fnc.gradient(a1)
+
+                dW1 = np.dot(x_slice.T, delta)
+                db1 = np.sum(delta, axis=0)
+
+                dW1 += self.reg_lambda * self.layers[0].W
+                dW2 += self.reg_lambda * self.layers[1].W
+
+                self.layers[0].W += -learn_rate * dW1
+                self.layers[0].b += -learn_rate * db1
+                self.layers[1].W += -learn_rate * dW2
+                self.layers[1].b += -learn_rate * db2
 
                 if itr % 2000 == 0:
                     loss = self.__cross_entropy(x_slice, y_slice)
@@ -162,14 +157,24 @@ class MLP:
             logging.info(f"Loss at epoch {epoch}, {loss_items}")
             self.loss_hist.append((epoch, loss_items))
 
-            train_acc = self.evaluate_acc(self.predict(x_train), y_train)
-            logging.info(f"Train accurary({train_acc}) at epoch {epoch}")
+            train_acc = self.compute_acc(x_train, y_train)
+            logging.info(f"Train accurary({train_acc})")
             self.train_acc.append((epoch, train_acc))
 
-            test_acc = self.evaluate_acc(self.predict(x_test), y_test)
-            logging.info(f"Test accurary({test_acc}) at epoch {epoch}")
+            test_acc = self.compute_acc(x_test, y_test)
+            logging.info(f"Test accurary({test_acc})")
             self.test_acc.append((epoch, test_acc))
-
+    
+    def compute_acc(self, X, y):
+        correct = 0
+        for i in range(X.shape[0]):
+            predicted = self.predict(X[i])
+            actual = y[i]
+            if predicted == actual:
+                correct += 1
+        accuracy = 100 * correct / X.shape[0]
+        return accuracy
+    
     def __compute_probs(self, X):
 
         for i in range(0, self.n_hidden_layers + 1):
@@ -187,11 +192,21 @@ class MLP:
         return z
 
     def predict(self, X):
-        return np.argmax(self.__compute_probs(X), axis=1)
+        W1, b1, W2, b2 = self.layers[0].W, self.layers[0].b, self.layers[1].W, self.layers[1].b
+        # Forward prop to compute predictions
+        z1 = X.dot(W1) + b1
+        a1 = np.tanh(z1)  # currently using tanh activation
+        # a1 = np.maximum(1e-3, z1)  # leaky ReLU activation
+        z2 = a1.dot(W2) + b2
+        power = np.exp(z2)
+        probs = power / np.sum(power, axis=1, keepdims=True)  # softmax output
+        
+        labels = np.argmax(probs, axis=1) 
+        return labels
 
     # Compute model label prediction accuracy on all 50,000 train images
     def evaluate_acc(self, test, pred):
-        return np.sum(pred == test) / test.shape[0]
+        return 100 * np.sum(pred == test) / test.shape[0]
 
     def add_layer(self, layer: Layer):
         """
@@ -203,26 +218,22 @@ class MLP:
     def __cross_entropy(self, X, y):
 
         # power = np.exp(self.layers[-1].z)
-        initial_probs = self.__compute_probs(X)
+        W1, b1, W2, b2 = self.layers[0].W, self.layers[0].b, self.layers[1].W, self.layers[1].b
+
+        # Forward prop to compute predictions
+        z1 = X.dot(W1) + b1
+        a1 = np.tanh(z1)  # currently using tanh activation
+        # a1 = np.maximum(1e-3, z1)  # ReLU activation
+        z2 = a1.dot(W2) + b2
+        power = np.exp(z2)
+        initial_probs = power / np.sum(power, axis=1, keepdims=True)
 
         # Compute cross-entropy loss
         loss = np.sum(-np.log(initial_probs[range(self.n_data), y]))
+        
+        # Add regularization
+        loss += (self.reg_lambda / 2) * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
 
-        # regularization
-        loss += (self.reg_lambda / 2) * (np.sum(np.square(self.layers[0].W)))
-
-        for layer in self.layers[1:]:
-            loss += np.sum(np.square(layer.W))
-
-        out = (1 / self.n_data) * loss
+        out = (1. / self.n_data) * loss
         return out
 
-    def __compute_acc(self, X, y):
-        correct = 0
-        total = 0
-        for i in range(X.shape[0]):
-            pred = self.predict(X[i])
-            if pred == y[i]:
-                correct += 1
-            total += 1
-        return 100 * correct / total
