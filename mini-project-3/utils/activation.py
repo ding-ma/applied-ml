@@ -25,7 +25,6 @@ class Sigmoid(ActivationFunction):
 
 class Softmax(ActivationFunction):
     def __call__(self, x):
-        # e_x = np.exp(x)
         power = np.exp(x)
         return power / np.sum(power, axis=-1, keepdims=True)
 

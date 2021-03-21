@@ -105,7 +105,7 @@ class AbstractMLP(ABC):
             logging.info(epoch_stats)
 
     @abstractmethod
-    def compute_loss(self, X):
+    def compute_loss(self, X, y):
         pass
     
     @abstractmethod

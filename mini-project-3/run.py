@@ -51,13 +51,11 @@ if __name__ == "__main__":
         (
             {
                 "input_dim": 28 * 28,
-                "hidden_1_dim": 128,
-                "hidden_2_dim": 128,
+                "hidden_dim": 128,
                 "output_dim": 10,
-                "hiddent_1_fnc": ReLU(),
-                "hiddent_2_fnc": ReLU(),
-                "output_fnc": Softmax()
-            }, 
+                "hiddent_fnc": ReLU(),
+                "output_fnc": Softmax(),
+            },
             {
                 "batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15,  "L2": False, "anneal":True
             },
@@ -70,13 +68,11 @@ if __name__ == "__main__":
         (
             {
                 "input_dim": 28 * 28,
-                "hidden_1_dim": 128,
-                "hidden_2_dim": 128,
+                "hidden_dim": 128,
                 "output_dim": 10,
-                "hiddent_1_fnc": Sigmoid(),
-                "hiddent_2_fnc": Sigmoid(),
-                "output_fnc": Softmax()
-            }, 
+                "hiddent_fnc": TanH(),
+                "output_fnc": Softmax(),
+            },
             {
                 "batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15,  "L2": False, "anneal":True
             },
@@ -89,51 +85,28 @@ if __name__ == "__main__":
         (
             {
                 "input_dim": 28 * 28,
-                "hidden_1_dim": 128,
-                "hidden_2_dim": 128,
+                "hidden_dim": 128,
                 "output_dim": 10,
-                "hiddent_1_fnc": TanH(),
-                "hiddent_2_fnc": TanH(),
-                "output_fnc": Softmax()
-            }, 
+                "hiddent_fnc": ReLU(),
+                "output_fnc": Softmax(),
+            },
             {
                 "batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15,  "L2": False, "anneal":True
             },
             {
                 "threshold": False,
-                "normalize": True,
+                "normalize": False,
                 "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
             }
         ),
         (
             {
                 "input_dim": 28 * 28,
-                "hidden_1_dim": 128,
-                "hidden_2_dim": 128,
+                "hidden_dim": 128,
                 "output_dim": 10,
-                "hiddent_1_fnc": ReLU(),
-                "hiddent_2_fnc": ReLU(),
-                "output_fnc": Softmax()
-            }, 
-            {
-                "batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15,  "L2": True, "anneal":True
+                "hiddent_fnc": TanH(),
+                "output_fnc": Softmax(),
             },
-            {
-                "threshold": False,
-                "normalize": True,
-                "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
-            }
-        ),
-        (
-            {
-                "input_dim": 28 * 28,
-                "hidden_1_dim": 128,
-                "hidden_2_dim": 128,
-                "output_dim": 10,
-                "hiddent_1_fnc": ReLU(),
-                "hiddent_2_fnc": ReLU(),
-                "output_fnc": Softmax()
-            }, 
             {
                 "batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15,  "L2": False, "anneal":True
             },
@@ -157,7 +130,7 @@ if __name__ == "__main__":
         {model_config}
         """
 
-        mlp = TwoLayer(model_config, **gradient_config)
+        mlp = OneLayer(model_config, **gradient_config)
 
         logging.basicConfig(
             format="%(asctime)s %(levelname)-8s %(message)s",
