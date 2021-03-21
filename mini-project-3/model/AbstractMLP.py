@@ -24,6 +24,7 @@ class AbstractMLP(ABC):
         anneal=True,
         num_epochs=50,
         L2=False,
+        early_stop=0
     ):
         self.learn_rate_init = learn_rate_init
         self.batch_size = batch_size
@@ -41,6 +42,7 @@ class AbstractMLP(ABC):
         self.test_acc_history = []
         self.file_name = ""
         self.delta = None
+        self.early_stop = early_stop
 
     def fit(self, train_array, train_labels_array, x_test=None, y_test=None):
         self.num_iterations = int(train_array.shape[0] / self.batch_size)
@@ -55,7 +57,6 @@ class AbstractMLP(ABC):
             train_array = train_array[indices]
             train_labels_array = train_labels_array[indices]
 
-            # TODO: shuffle data
             for i in range(1, self.num_iterations + 1):
                 X = train_array[current_index : current_index + self.batch_size]
                 y = train_labels_array[current_index : current_index + self.batch_size]
@@ -84,7 +85,7 @@ class AbstractMLP(ABC):
                     loss = self.compute_loss(X, y)
                     running_loss.append(loss)
                     logging.info(f"Loss {loss} at epoch {epoch} iteration {i}")
-
+            
             loss = sum(running_loss) / len(running_loss)
             self.loss_history.append(loss)
 
@@ -101,6 +102,17 @@ class AbstractMLP(ABC):
             Test acc: {test_acc}
             """
             logging.info(epoch_stats)
+            
+            if self.early_stop:
+                tmp = pd.DataFrame({
+                    "loss": self.loss_history
+                })
+                tmp['avg'] = tmp.rolling(window=4).mean()
+                tmp['diff'] = (tmp['loss']-tmp['avg']).abs()
+                if tmp.iloc[[-1]]['diff'].values[0] < self.early_stop:
+                    logging.info("Early Stop, training stopped")
+                    break
+
 
     @abstractmethod
     def compute_loss(self, X, y):

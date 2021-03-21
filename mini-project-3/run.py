@@ -49,10 +49,24 @@ if __name__ == "__main__":
 
     model_config = {
         "input_dim": 28 * 28,
+        "hidden_1_dim": 512,
+        "hidden_2_dim": 256,
         "output_dim": 10,
+        "hiddent_1_fnc": ReLU(),
+        "hiddent_2_fnc": ReLU(),
         "output_fnc": Softmax(),
     }
-    gradient_config = {"batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15, "L2": False}
+
+    gradient_config = {
+        "batch_size": 10,
+        "learn_rate_init": 0.0002,
+        "reg_lambda": 0.1,
+        "num_epochs": 40,
+        "L2": True,
+        "anneal": True,
+        "early_stop": 0.05,
+    }
+
     preprocess_param = {
         "threshold": False,
         "normalize": True,
@@ -60,6 +74,8 @@ if __name__ == "__main__":
     }
 
     experiment_description = f"""
+    Testing early stop
+    
     Gradient Parameters
     {gradient_config}
 
@@ -70,7 +86,7 @@ if __name__ == "__main__":
     {model_config}
     """
 
-    mlp = NoLayer(model_config, **gradient_config)
+    mlp = TwoLayer(model_config, **gradient_config)
 
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(message)s",
@@ -92,5 +108,3 @@ if __name__ == "__main__":
     logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
     mlp.save()
     mlp.plot(y_test, y_pred)
-
-    print("############################################################################")

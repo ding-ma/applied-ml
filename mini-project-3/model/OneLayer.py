@@ -23,6 +23,7 @@ class OneLayer(AbstractMLP):
         anneal=True,
         num_epochs=50,
         L2=False,
+        early_stop=0
     ):
         super().__init__(
             model_config["input_dim"],
@@ -34,6 +35,7 @@ class OneLayer(AbstractMLP):
             anneal,
             num_epochs,
             L2,
+            early_stop
         )
         self.hidden_dim: int = model_config["hidden_dim"]
         self.hiddent_fnc: ActivationFunction = model_config["hiddent_fnc"]

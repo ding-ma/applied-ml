@@ -23,6 +23,7 @@ class NoLayer(AbstractMLP):
         anneal=True,
         num_epochs=50,
         L2=False,
+        early_stop=0
     ):
         super().__init__(
             model_config["input_dim"],
@@ -34,6 +35,7 @@ class NoLayer(AbstractMLP):
             anneal,
             num_epochs,
             L2,
+            early_stop
         )
 
         self.W1 = np.random.randn(self.input_dim, self.output_dim) / np.sqrt(self.input_dim)
