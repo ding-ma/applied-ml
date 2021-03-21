@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from utils.activation import ActivationFunction
+from utils.activation import ActivationFunction, RUN_DATE
+import joblib
+from pathlib import Path
 
 class AbstractMLP(ABC):
     def __init__(
@@ -47,3 +49,7 @@ class AbstractMLP(ABC):
     @abstractmethod
     def predict(self, x):
         pass
+
+    def save(self):
+        save_path = Path().cwd().joinpath("pickles").joinpath(f"{RUN_DATE}.pkl")
+        joblib.dump(self, save_path, compress=1)

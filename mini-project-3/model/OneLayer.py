@@ -1,5 +1,4 @@
 # %%
-import joblib
 from datetime import datetime
 from pathlib import Path
 import numpy as np
@@ -110,7 +109,7 @@ class OneLayer(AbstractMLP):
 
         z2 = a1.dot(self.W2) + self.b2
         initial_probs = self.output_fnc(z2)
-        
+
         # Compute cross-entropy loss
         loss = np.sum(-np.log(initial_probs[range(num_data), y]))
 

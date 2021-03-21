@@ -75,12 +75,13 @@ if __name__ == "__main__":
         "reg_lambda":0.7
     }
 
-    model_config_0_layer = {
-        "input_dim": 28*28,
-        "output_dim": 10,
-        "output_fnc": Softmax()
-    }
-    mlp = NoLayer(model_config_0_layer, **gradient_config)
+
+    # model_config_0_layer = {
+    #     "input_dim": 28*28,
+    #     "output_dim": 10,
+    #     "output_fnc": Softmax()
+    # }
+    # mlp = NoLayer(model_config_0_layer, **gradient_config)
 
     # model_config_1_layer = {
     #     "input_dim": 28 * 28,
@@ -91,19 +92,20 @@ if __name__ == "__main__":
     # }
     # mlp = OneLayer(model_config_1_layer, **gradient_config)
 
-    # model_config_2_layer = {
-    #     "input_dim": 28 * 28,
-    #     "hidden_1_dim": 256,
-    #     "hidden_2_dim": 128,
-    #     "output_dim": 10,
-    #     "hiddent_1_fnc": TanH(),
-    #     "hiddent_2_fnc": TanH(),
-    #     "output_fnc": Softmax(),
-    # }
-    # mlp = TwoLayer(model_config_2_layer, **gradient_config)
+    model_config_2_layer = {
+        "input_dim": 28 * 28,
+        "hidden_1_dim": 256,
+        "hidden_2_dim": 128,
+        "output_dim": 10,
+        "hiddent_1_fnc": TanH(),
+        "hiddent_2_fnc": TanH(),
+        "output_fnc": Softmax(),
+    }
+    mlp = TwoLayer(model_config_2_layer, **gradient_config)
 
 
     mlp.fit(train_array, y_train, test_array, y_test, num_epochs=10)
 
     y_pred = mlp.predict(test_array)
     logging.info(f"Final test accuracy {mlp.compute_acc(test_array, y_test)}")
+    mlp.save()
