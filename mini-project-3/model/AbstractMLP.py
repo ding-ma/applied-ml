@@ -51,6 +51,6 @@ class AbstractMLP(ABC):
     def predict(self, x):
         pass
 
-    def save(self, name):
+    def save(self):
         save_path = Path().cwd().joinpath("pickles").joinpath(self.file_name + ".pkl")
         joblib.dump(self, save_path, compress=1)
