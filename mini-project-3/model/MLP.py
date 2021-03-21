@@ -9,31 +9,19 @@ from datetime import datetime
 from pathlib import Path
 import numpy as np
 import logging
-
-np.random.seed(0)
-
-class Layer:
-    def __init__(self, input_dim, output_dim, activation_fnc):
-        self.W = np.random.randn(input_dim, output_dim) / np.sqrt(input_dim)
-        self.b = np.zeros((1, output_dim))
-
-        # set them as none to make debugging easier
-        # z = W*x+b
-        self.z = None
-
-        # a = activation(q)
-        self.a = None
-        self.dW = None
-        self.activation_fnc = activation_fnc
-
-    def __str__(self):
-        return f"W({self.W.shape}), b({self.b.shape}), a({self.a}), dw({self.dW})"
-
-    def __repr__(self):
-        return f"W({self.W.shape}), b({self.b.shape}), a({self.a}), dw({self.dW})"
+from abc import ABC, abstractmethod
 
 
-class Sigmoid:
+class ActivationFunction(ABC):
+    @abstractmethod
+    def __call__(self, x):
+        pass
+    
+    @abstractmethod
+    def gradient(self, x):
+        pass
+
+class Sigmoid(ActivationFunction):
     def __call__(self, x):
         return 1 / (1 + np.exp(-x))
 
@@ -41,27 +29,26 @@ class Sigmoid:
         return self.__call__(x) * (1 - self.__call__(x))
 
 
-class Softmax:
+class Softmax(ActivationFunction):
     def __call__(self, x):
         # e_x = np.exp(x)
-        # Original code:
-        e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
-        return e_x / np.sum(e_x, axis=-1, keepdims=True)
+        power = np.exp(x)
+        return power / np.sum(power, axis=-1, keepdims=True)
 
     def gradient(self, x):
         p = self.__call__(x)
         return p * (1 - p)
 
 
-class TanH:
+class TanH(ActivationFunction):
     def __call__(self, x):
-        return 2 / (1 + np.exp(-2 * x)) - 1
+        return np.tanh(x)
 
     def gradient(self, x):
-        return 1 - np.power(self.__call__(x), 2)
+        return 1 - np.power(x, 2)
 
 
-class ReLU:
+class ReLU(ActivationFunction):
     def __call__(self, x):
         return np.where(x >= 0, x, 0)
 
@@ -72,168 +59,150 @@ class ReLU:
 class MLP:
     def __init__(
         self,
-        base_learn_rate=0.01,
-        output_activation=None,
+        learn_rate_init=0.01,
         batch_size=4,
         reg_lambda=1e-2,
         anneal=True,
     ):
-        self.base_learn_rate = base_learn_rate
+        self.learn_rate_init = learn_rate_init
         self.batch_size = batch_size
-        self.output_activation = output_activation
         self.reg_lambda = reg_lambda
         self.anneal = anneal
 
-        self.layers = []
-        self.model = {}
-        self.loss_hist = []
-        self.train_acc = []
-        self.test_acc = []
+        self.loss_history = []
+        self.train_acc_history = []
+        self.test_acc_history = []
+    
+    def init_model(self, n_hidden_layers, model_config):
+        self.n_hidden_layers = n_hidden_layers
+        
+        if n_hidden_layers == 0:
+            pass
+        
+        elif n_hidden_layers == 1:
+            self.input_dim:int = model_config['input_dim']
+            self.hidden_dim:int = model_config['hidden_dim']
+            self.output_dim:int = model_config['output_dim']
+            self.hiddent_fnc:ActivationFunction = model_config['hiddent_fnc']
+            self.output_fnc:ActivationFunction = model_config['output_fnc']
 
-    def fit(self, x_train, y_train, x_test=None, y_test=None, n_epochs=50):
-        n_iterations = int(x_train.shape[0] / self.batch_size)
+            self.W1 = np.random.randn(self.input_dim, self.hidden_dim) / np.sqrt(self.input_dim)
+            self.b1 = np.zeros((1, self.hidden_dim))
 
-        for epoch in range(n_epochs):
-            curr_index = 0
+            self.W2 = np.random.randn(self.hidden_dim, self.output_dim) / np.sqrt(self.hidden_dim)  
+            self.b2 = np.zeros((1, self.output_dim))
+
+        elif n_hidden_layers == 2:
+            pass
+        else:
+            raise ValueError("Model depth can be 0, 1, or 2")
+        
+
+    def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
+        self.num_iterations = int(train_array.shape[0] / self.batch_size)
+        
+        for epoch in range(num_epochs):
+            current_index = 0
             running_loss = 0
-
-            for itr in range(n_iterations):
-
-                # mini batch split
-                x_slice = x_train[curr_index : curr_index + self.batch_size]
-                y_slice = y_train[curr_index : curr_index + self.batch_size]
-                self.n_data = x_slice.shape[0]
-
-                # index calculation for batches
-                if curr_index + 2 * self.batch_size <= self.n_data:
-                    curr_index += self.batch_size
-                else:
-                    curr_index = 0
-
-                if self.anneal:
-                    if epoch < n_epochs:
-                        learn_rate = self.base_learn_rate
-                    elif epoch < n_epochs / 2:
-                        learn_rate = self.base_learn_rate / 10
-                    elif epoch < 4 * n_epochs / 5:
-                        learn_rate = self.base_learn_rate / 100
-                    else:
-                        learn_rate = self.base_learn_rate / 1000
-                else:
-                    learn_rate = self.base_learn_rate
-
+            for i in range(self.num_iterations):
+                X = train_array[current_index : current_index + self.batch_size]
+                y = train_labels_array[current_index : current_index + self.batch_size]
                 
-                z1 = x_slice.dot(self.layers[0].W) + self.layers[0].b
-                a1 = self.layers[0].activation_fnc(z1)
+                if current_index + 2 * self.batch_size <= train_array.shape[0]:
+                    current_index += self.batch_size
+                else: # return to beginning
+                     current_index = 0
+                    
+                num_data = X.shape[0]
+                      # Annealing schedule
+                if epoch < num_epochs / 5:
+                    learn_rate = self.learn_rate_init
+                elif epoch < num_epochs / 2:
+                    learn_rate = self.learn_rate_init / 10
+                elif epoch < 4 * num_epochs / 5:
+                    learn_rate = self.learn_rate_init / 100
+                else:
+                    learn_rate = self.learn_rate_init / 1000
                 
-                z2 = a1.dot(self.layers[1].W) + self.layers[1].b
-                delta = self.layers[1].activation_fnc(z2)
+                z1 = X.dot(self.W1) + self.b1
+                a1 = self.hiddent_fnc(z1)
 
-                delta[range(self.n_data), y_slice] -=1
+                z2 = a1.dot(self.W2) + self.b2
 
+                # Backprop
+                delta = self.output_fnc(z2)
+                delta[range(num_data), y] -= 1
+                
                 dW2 = (a1.T).dot(delta)
                 db2 = np.sum(delta, axis=0, keepdims=True)
-
-                delta = delta.dot(self.layers[1].W.T) * self.layers[0].activation_fnc.gradient(a1)
-
-                dW1 = np.dot(x_slice.T, delta)
+                
+                delta = delta.dot(self.W2.T) * self.hiddent_fnc.gradient(a1)  # tanh gradient
+                dW1 = np.dot(X.T, delta)
                 db1 = np.sum(delta, axis=0)
 
-                dW1 += self.reg_lambda * self.layers[0].W
-                dW2 += self.reg_lambda * self.layers[1].W
+                dW1 += self.reg_lambda * self.W1
+                dW2 += self.reg_lambda * self.W2
 
-                self.layers[0].W += -learn_rate * dW1
-                self.layers[0].b += -learn_rate * db1
-                self.layers[1].W += -learn_rate * dW2
-                self.layers[1].b += -learn_rate * db2
+                # Gradient descent updates
+                self.W1 += -learn_rate * dW1
+                self.b1 += -learn_rate * db1
+                self.W2 += -learn_rate * dW2
+                self.b2 += -learn_rate * db2
 
-                if itr % 2000 == 0:
-                    loss = self.__cross_entropy(x_slice, y_slice)
+
+                if i % 2000 == 0: 
+                    loss = self.compute_ce_loss(X, y)
                     running_loss += loss
-                    logging.info(f"Loss at epoch {epoch}, iteration {itr}, loss {loss}")
+                    print("Loss at epoch %d iteration %d: %f" % (epoch, i, loss))
+        
+            loss_item = running_loss / int(self.num_iterations / 2000) 
+            print("Loss at epoch %d: %f" % (epoch, loss_item))   
+            self.loss_history.append((epoch, loss_item))
 
-
-            loss_items = running_loss / int(n_iterations / 2000)
-            logging.info(f"Loss at epoch {epoch}, {loss_items}")
-            self.loss_hist.append((epoch, loss_items))
-
-            train_acc = self.compute_acc(x_train, y_train)
-            logging.info(f"Train accurary({train_acc})")
-            self.train_acc.append((epoch, train_acc))
+            train_acc = self.compute_acc(train_array, train_labels_array)
+            print("Train_acc at epoch %d: %f" % (epoch, train_acc))
+            self.train_acc_history.append((epoch, train_acc))
 
             test_acc = self.compute_acc(x_test, y_test)
-            logging.info(f"Test accurary({test_acc})")
-            self.test_acc.append((epoch, test_acc))
+            print("Test_acc at epoch %d: %f" % (epoch, test_acc))
+            self.test_acc_history.append((epoch, test_acc))
+
+    def compute_ce_loss(self, X,y):
+        num_data = X.shape[0]
+        # Forward prop to compute predictions
+        z1 = X.dot(self.W1) + self.b1
+        a1 = np.tanh(z1)  # currently using tanh activation
+        # a1 = np.maximum(1e-3, z1)  # ReLU activation
+        z2 = a1.dot(self.W2) + self.b2
+        initial_probs = self.output_fnc(z2)
+
+        # Compute cross-entropy loss
+        loss = np.sum(-np.log(initial_probs[range(num_data), y]))
+        
+        # Add regularization
+        loss += (self.reg_lambda / 2) * (np.sum(np.square(self.W1)) + np.sum(np.square(self.W2)))
+
+        out = (1. / num_data) * loss
+        return out
     
     def compute_acc(self, X, y):
         correct = 0
         for i in range(X.shape[0]):
             predicted = self.predict(X[i])
-            actual = y[i]
-            if predicted == actual:
+            
+            if predicted == y[i]:
                 correct += 1
+        
         accuracy = 100 * correct / X.shape[0]
         return accuracy
-    
-    def __compute_probs(self, X):
 
-        for i in range(0, self.n_hidden_layers + 1):
-            if i == 0:
-                z = X.dot(self.layers[0].W) + self.layers[0].b
-            else:
-                W = self.layers[i].W
-                b = self.layers[i].b
-                z = self.layers[i - 1].a.dot(W) + b
-            if i != self.n_hidden_layers:
-                self.layers[i].a = self.layers[i].activation_fnc(z)
-            else:
-                z = self.layers[i].activation_fnc(z)
-
-        return z
-
-    def predict(self, X):
-        W1, b1, W2, b2 = self.layers[0].W, self.layers[0].b, self.layers[1].W, self.layers[1].b
-        # Forward prop to compute predictions
-        z1 = X.dot(W1) + b1
+    def predict(self, x):
+            # Forward prop to compute predictions
+        z1 = x.dot(self.W1) + self.b1
         a1 = np.tanh(z1)  # currently using tanh activation
         # a1 = np.maximum(1e-3, z1)  # leaky ReLU activation
-        z2 = a1.dot(W2) + b2
-        power = np.exp(z2)
-        probs = power / np.sum(power, axis=1, keepdims=True)  # softmax output
+        z2 = a1.dot(self.W2) + self.b2
+        probs = self.output_fnc(z2)
         
         labels = np.argmax(probs, axis=1) 
         return labels
-
-    # Compute model label prediction accuracy on all 50,000 train images
-    def evaluate_acc(self, test, pred):
-        return 100 * np.sum(pred == test) / test.shape[0]
-
-    def add_layer(self, layer: Layer):
-        """
-        Add layer starting from the input layer
-        """
-        self.layers.append(layer)
-        self.n_hidden_layers = len(self.layers) - 1
-
-    def __cross_entropy(self, X, y):
-
-        # power = np.exp(self.layers[-1].z)
-        W1, b1, W2, b2 = self.layers[0].W, self.layers[0].b, self.layers[1].W, self.layers[1].b
-
-        # Forward prop to compute predictions
-        z1 = X.dot(W1) + b1
-        a1 = np.tanh(z1)  # currently using tanh activation
-        # a1 = np.maximum(1e-3, z1)  # ReLU activation
-        z2 = a1.dot(W2) + b2
-        power = np.exp(z2)
-        initial_probs = power / np.sum(power, axis=1, keepdims=True)
-
-        # Compute cross-entropy loss
-        loss = np.sum(-np.log(initial_probs[range(self.n_data), y]))
-        
-        # Add regularization
-        loss += (self.reg_lambda / 2) * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
-
-        out = (1. / self.n_data) * loss
-        return out
-
