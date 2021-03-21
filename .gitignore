@@ -133,4 +133,5 @@ dmypy.json
 
 *.csv
 scratch/
+!scratch/.gitkeep
 __pycache__/

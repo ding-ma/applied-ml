@@ -21,8 +21,10 @@ class OneLayer(AbstractMLP):
         batch_size=4,
         reg_lambda=1e-2,
         anneal=True,
+        num_epochs=50,
+        L2 = False,
     ):
-        super().__init__(model_config["input_dim"], model_config["output_dim"], model_config["output_fnc"],learn_rate_init, batch_size, reg_lambda, anneal)
+        super().__init__(model_config["input_dim"], model_config["output_dim"], model_config["output_fnc"],learn_rate_init, batch_size, reg_lambda, anneal,num_epochs,L2)
         self.hidden_dim: int = model_config["hidden_dim"]
         self.hiddent_fnc: ActivationFunction = model_config["hiddent_fnc"]
 
@@ -35,75 +37,34 @@ class OneLayer(AbstractMLP):
         self.file_name =  f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}"
 
 
-    def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
-        self.num_iterations = int(train_array.shape[0] / self.batch_size)
+    def forward_prop(self, X):
+        self.z1 = X.dot(self.W1) + self.b1
+        self.a1 = self.hiddent_fnc(self.z1)
+        self.z2 = self.a1.dot(self.W2) + self.b2
 
-        for epoch in range(num_epochs):
-            current_index = 0
-            running_loss = 0
-            for i in range(self.num_iterations):
-                X = train_array[current_index : current_index + self.batch_size]
-                y = train_labels_array[current_index : current_index + self.batch_size]
+        self.delta = self.output_fnc(self.z2)    
 
-                if current_index + 2 * self.batch_size <= train_array.shape[0]:
-                    current_index += self.batch_size
-                else:  # return to beginning
-                    current_index = 0
+    def backward_pop(self, num_data, X, y, learn_rate):
+        self.delta[range(num_data), y] -= 1
 
-                num_data = X.shape[0]
-                # Annealing schedule
-                if epoch < num_epochs / 5:
-                    learn_rate = self.learn_rate_init
-                elif epoch < num_epochs / 2:
-                    learn_rate = self.learn_rate_init / 10
-                elif epoch < 4 * num_epochs / 5:
-                    learn_rate = self.learn_rate_init / 100
-                else:
-                    learn_rate = self.learn_rate_init / 1000
+        dW2 = (self.a1.T).dot(self.delta)
+        db2 = np.sum(self.delta, axis=0, keepdims=True)
 
-                z1 = X.dot(self.W1) + self.b1
-                a1 = self.hiddent_fnc(z1)
+        self.delta = self.delta.dot(self.W2.T) * self.hiddent_fnc.gradient(self.a1)
+        dW1 = np.dot(X.T, self.delta)
+        db1 = np.sum(self.delta, axis=0)
 
-                z2 = a1.dot(self.W2) + self.b2
+        dW1 += self.reg_lambda * self.W1
+        dW2 += self.reg_lambda * self.W2
 
-                # Backprop
-                delta = self.output_fnc(z2)
-                delta[range(num_data), y] -= 1
+        # Gradient descent updates
+        self.W1 += -learn_rate * dW1
+        self.b1 += -learn_rate * db1
+        self.W2 += -learn_rate * dW2
+        self.b2 += -learn_rate * db2
 
-                dW2 = (a1.T).dot(delta)
-                db2 = np.sum(delta, axis=0, keepdims=True)
 
-                delta = delta.dot(self.W2.T) * self.hiddent_fnc.gradient(a1)  # tanh gradient
-                dW1 = np.dot(X.T, delta)
-                db1 = np.sum(delta, axis=0)
-
-                dW1 += self.reg_lambda * self.W1
-                dW2 += self.reg_lambda * self.W2
-
-                # Gradient descent updates
-                self.W1 += -learn_rate * dW1
-                self.b1 += -learn_rate * db1
-                self.W2 += -learn_rate * dW2
-                self.b2 += -learn_rate * db2
-
-                if i % 500 == 0:
-                    loss = self.compute_ce_loss(X, y)
-                    running_loss += loss
-                    logging.info("Loss at epoch %d iteration %d: %f" % (epoch, i, loss))
-
-            loss_item = running_loss / int(self.num_iterations / 2000)
-            logging.info("Loss at epoch %d: %f" % (epoch, loss_item))
-            self.loss_history.append((epoch, loss_item))
-
-            train_acc = self.compute_acc(train_array, train_labels_array)
-            logging.info("Train_acc at epoch %d: %f" % (epoch, train_acc))
-            self.train_acc_history.append((epoch, train_acc))
-
-            test_acc = self.compute_acc(x_test, y_test)
-            logging.info("Test_acc at epoch %d: %f" % (epoch, test_acc))
-            self.test_acc_history.append((epoch, test_acc))
-
-    def compute_ce_loss(self, X, y):
+    def compute_loss(self, X, y):
         num_data = X.shape[0]
 
         # Forward prop to compute predictions
@@ -117,19 +78,13 @@ class OneLayer(AbstractMLP):
         loss = np.sum(-np.log(initial_probs[range(num_data), y]))
 
         # Add regularization
-        loss += (self.reg_lambda / 2) * (np.sum(np.square(self.W1)) + np.sum(np.square(self.W2)))
+        if self.L2:
+            loss += (self.reg_lambda / 2) * (np.sum(np.square(self.W1)) + np.sum(np.square(self.W2)))
 
         out = (1.0 / num_data) * loss
         return out
 
     def predict(self, x):
-        # Forward prop to compute predictions
-        z1 = x.dot(self.W1) + self.b1
-        a1 = self.hiddent_fnc(z1) 
-
-        z2 = a1.dot(self.W2) + self.b2
-        probs = self.output_fnc(z2)
-
-        labels = np.argmax(probs, axis=1)
-        return labels
+        self.forward_prop(x)
+        return np.argmax(self.delta, axis=1)
     

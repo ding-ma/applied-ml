@@ -21,41 +21,47 @@ import numpy as np
 
 
 data_preprocess_config = {
-    "threshold": True,
+    "threshold": False,
     "normalize": True,
-    "augment_data": {"rotate": True, "shift": True, "zoom": True, "shear": True, "all": True}
+    "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
 }
 
-gradient_config = {"batch_size": 20, "learn_rate_init": 0.0008, "reg_lambda": 0.7}
+gradient_config = {"batch_size": 20, "learn_rate_init": 0.0008, "reg_lambda": 0.7, "num_epochs": 50, "L2": False}
+
+
+# num_epochs = {"num_epochs": }
 
 if __name__ == "__main__":
     np.random.seed(0)
 
     experiment_description = f"""
     Augmented all the data
+    No L2
 
     Experiment Parameters
     {gradient_config}
 
     Preprocess Parameters
     {data_preprocess_config}
+
     """
 
-    # model_config_0_layer = {
-    #     "input_dim": 28*28,
-    #     "output_dim": 10,
-    #     "output_fnc": Softmax()
-    # }
+    model_config_0_layer = {
+        "input_dim": 28*28,
+        "output_dim": 10,
+        "output_fnc": Softmax(),
+    }
     # mlp = NoLayer(model_config_0_layer, **gradient_config)
 
-    # model_config_1_layer = {
-    #     "input_dim": 28 * 28,
-    #     "hidden_dim": 256,
-    #     "output_dim": 10,
-    #     "hiddent_fnc": TanH(),
-    #     "output_fnc": Softmax(),
-    # }
+    model_config_1_layer = {
+        "input_dim": 28 * 28,
+        "hidden_dim": 128,
+        "output_dim": 10,
+        "hiddent_fnc": ReLU(),
+        "output_fnc": Softmax(),
+    }
     # mlp = OneLayer(model_config_1_layer, **gradient_config)
+
     model_config_2_layer = {
         "input_dim": 28 * 28,
         "hidden_1_dim": 128,
@@ -65,7 +71,6 @@ if __name__ == "__main__":
         "hiddent_2_fnc": ReLU(),
         "output_fnc": Softmax(),
     }
-
     mlp = TwoLayer(model_config_2_layer, **gradient_config)
 
     logging.basicConfig(
@@ -73,7 +78,7 @@ if __name__ == "__main__":
         level=logging.INFO,
         datefmt="%Y-%m-%d %H:%M:%S",
         handlers=[
-            logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
+            # logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
             logging.StreamHandler(sys.stdout),
         ],
     )
@@ -82,10 +87,11 @@ if __name__ == "__main__":
 
 
     (train_array, y_train), test_array, y_test = aquire_data(**data_preprocess_config)
-    print(train_array.shape, y_train.shape, test_array.shape, y_test.shape)
+    # print(train_array.shape, y_train.shape, test_array.shape, y_test.shape)
 
 
-    mlp.fit(train_array, y_train, test_array, y_test, num_epochs=40)
+# for num_epochs in range(10, 51, 10):
+    mlp.fit(train_array, y_train, test_array, y_test)
     y_pred = mlp.predict(test_array)
     logging.info(f"Final test accuracy {mlp.compute_acc(test_array, y_test)}")
     mlp.save()
