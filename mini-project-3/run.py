@@ -46,9 +46,6 @@ if __name__ == "__main__":
     {data_preprocess_config}
     """
 
-
-    (train_array, y_train), test_array, y_test = aquire_data(**data_preprocess_config)
-    print(train_array.shape, y_train.shape, test_array.shape, y_test.shape)
     # train_array = x_train.reshape(x_train.shape[0], 28 * 28)
     # test_array = x_test.reshape(x_test.shape[0], 28 * 28)
 
@@ -93,7 +90,9 @@ if __name__ == "__main__":
     logging.info(experiment_description)
 
 
-
+    (train_array, y_train), test_array, y_test = aquire_data(**data_preprocess_config)
+    print(train_array.shape, y_train.shape, test_array.shape, y_test.shape)
+    
     mlp.fit(train_array, y_train, test_array, y_test, num_epochs=30)
     y_pred = mlp.predict(test_array)
     logging.info(f"Final test accuracy {mlp.compute_acc(test_array, y_test)}")
