@@ -50,7 +50,7 @@ class TwoLayer(AbstractMLP):
         self.W3 = np.random.randn(self.hidden_2_dim, self.output_dim) / np.sqrt(self.hidden_2_dim)
         self.b3 = np.zeros((1, self.output_dim))
 
-        self.file_name = f"{RUN_DATE}_two_layer_{self.hidden_1_dim}_{self.hiddent_1_fnc}_{self.hidden_2_dim}_{self.hiddent_2_fnc}"
+        self.file_name = f"{RUN_DATE}_two_layer_{self.hidden_1_dim}_{self.hiddent_1_fnc}_{self.hidden_2_dim}_{self.hiddent_2_fnc}_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
 
     def compute_loss(self, X, y):
         num_data = X.shape[0]
@@ -112,7 +112,3 @@ class TwoLayer(AbstractMLP):
         self.b2 += -learn_rate * db2
         self.W3 += -learn_rate * dW3
         self.b3 += -learn_rate * db3
-
-    def predict(self, x):
-        self.forward_prop(x)
-        return np.argmax(self.delta, axis=1)

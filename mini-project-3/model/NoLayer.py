@@ -13,7 +13,6 @@ import logging
 from model.AbstractMLP import AbstractMLP
 
 
-# TODO: implement No layer
 class NoLayer(AbstractMLP):
     def __init__(
         self,
@@ -39,7 +38,7 @@ class NoLayer(AbstractMLP):
         self.W1 = np.random.randn(self.input_dim, self.output_dim) / np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.output_dim))
 
-        self.file_name =  f"{RUN_DATE}_no_layer"
+        self.file_name =  f"{RUN_DATE}_no_layer_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
 
 
     def compute_loss(self, X,y):
@@ -55,10 +54,6 @@ class NoLayer(AbstractMLP):
         out = (1.0 / num_data) * loss
         return out
     
-
-    def predict(self, x):
-        self.forward_prop(x)
-        return np.argmax(self.delta, axis=1)
     
     def forward_prop(self, X):
         self.z1 = X.dot(self.W1) + self.b1
@@ -73,3 +68,4 @@ class NoLayer(AbstractMLP):
 
         dW1 += self.reg_lambda * self.W1
         self.W1 += -learn_rate * dW1
+        self.b1 += -learn_rate * db1

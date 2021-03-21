@@ -26,10 +26,7 @@ data_preprocess_config = {
     "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
 }
 
-gradient_config = {"batch_size": 20, "learn_rate_init": 0.0008, "reg_lambda": 0.7, "num_epochs": 50, "L2": False}
-
-
-# num_epochs = {"num_epochs": }
+gradient_config = {"batch_size": 20, "learn_rate_init": 0.0005, "reg_lambda": 0.20, "num_epochs": 5, "L2": False}
 
 if __name__ == "__main__":
     np.random.seed(0)
@@ -87,12 +84,10 @@ if __name__ == "__main__":
 
 
     (train_array, y_train), test_array, y_test = aquire_data(**data_preprocess_config)
-    # print(train_array.shape, y_train.shape, test_array.shape, y_test.shape)
 
-
-# for num_epochs in range(10, 51, 10):
     mlp.fit(train_array, y_train, test_array, y_test)
     y_pred = mlp.predict(test_array)
-    logging.info(f"Final test accuracy {mlp.compute_acc(test_array, y_test)}")
-    mlp.save()
 
+    logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
+    mlp.save()
+    mlp.plot(y_test, y_pred)

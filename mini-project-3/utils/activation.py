@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 import numpy as np
 
-RUN_DATE = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+RUN_DATE = datetime.now().strftime("%m-%d_%H%M%S")
 
 class ActivationFunction(ABC):
     @abstractmethod

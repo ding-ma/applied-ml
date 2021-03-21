@@ -34,7 +34,7 @@ class OneLayer(AbstractMLP):
         self.W2 = np.random.randn(self.hidden_dim, self.output_dim) / np.sqrt(self.hidden_dim)
         self.b2 = np.zeros((1, self.output_dim))
 
-        self.file_name =  f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}"
+        self.file_name =  f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
 
 
     def forward_prop(self, X):
@@ -83,8 +83,4 @@ class OneLayer(AbstractMLP):
 
         out = (1.0 / num_data) * loss
         return out
-
-    def predict(self, x):
-        self.forward_prop(x)
-        return np.argmax(self.delta, axis=1)
-    
+   
