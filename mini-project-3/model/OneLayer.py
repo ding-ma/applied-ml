@@ -17,20 +17,15 @@ from model.AbstractMLP import AbstractMLP
 class OneLayer(AbstractMLP):
     def __init__(
         self,
+        model_config,
         learn_rate_init=0.01,
         batch_size=4,
         reg_lambda=1e-2,
         anneal=True,
     ):
-        super().__init__(learn_rate_init, batch_size, reg_lambda, anneal)
-
-    def init_model(self, n_hidden_layers, model_config):
-        self.n_hidden_layers = n_hidden_layers
-        self.input_dim: int = model_config["input_dim"]
+        super().__init__(model_config["input_dim"], model_config["output_dim"], model_config["output_fnc"],learn_rate_init, batch_size, reg_lambda, anneal)
         self.hidden_dim: int = model_config["hidden_dim"]
-        self.output_dim: int = model_config["output_dim"]
         self.hiddent_fnc: ActivationFunction = model_config["hiddent_fnc"]
-        self.output_fnc: ActivationFunction = model_config["output_fnc"]
 
         self.W1 = np.random.randn(self.input_dim, self.hidden_dim) / np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.hidden_dim))
@@ -108,13 +103,14 @@ class OneLayer(AbstractMLP):
 
     def compute_ce_loss(self, X, y):
         num_data = X.shape[0]
+
         # Forward prop to compute predictions
         z1 = X.dot(self.W1) + self.b1
-        a1 = np.tanh(z1)  # currently using tanh activation
-        # a1 = np.maximum(1e-3, z1)  # ReLU activation
+        a1 = self.hiddent_fnc(z1) 
+
         z2 = a1.dot(self.W2) + self.b2
         initial_probs = self.output_fnc(z2)
-
+        
         # Compute cross-entropy loss
         loss = np.sum(-np.log(initial_probs[range(num_data), y]))
 
@@ -124,22 +120,11 @@ class OneLayer(AbstractMLP):
         out = (1.0 / num_data) * loss
         return out
 
-    def compute_acc(self, X, y):
-        correct = 0
-        for i in range(X.shape[0]):
-            predicted = self.predict(X[i])
-
-            if predicted == y[i]:
-                correct += 1
-
-        accuracy = 100 * correct / X.shape[0]
-        return accuracy
-
     def predict(self, x):
         # Forward prop to compute predictions
         z1 = x.dot(self.W1) + self.b1
-        a1 = np.tanh(z1)  # currently using tanh activation
-        # a1 = np.maximum(1e-3, z1)  # leaky ReLU activation
+        a1 = self.hiddent_fnc(z1) 
+
         z2 = a1.dot(self.W2) + self.b2
         probs = self.output_fnc(z2)
 

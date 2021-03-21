@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
+from utils.activation import ActivationFunction
 
 class AbstractMLP(ABC):
     def __init__(
         self,
+        input_dim,
+        output_dim,
+        output_fnc,
         learn_rate_init=0.01,
         batch_size=4,
         reg_lambda=1e-2,
@@ -12,15 +16,15 @@ class AbstractMLP(ABC):
         self.batch_size = batch_size
         self.reg_lambda = reg_lambda
         self.anneal = anneal
-
+        
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.output_fnc: ActivationFunction = output_fnc
+        
         self.loss_history = []
         self.train_acc_history = []
         self.test_acc_history = []
     
-    @abstractmethod
-    def init_model(self, n_hidden_layers, model_config):
-        pass
-
     @abstractmethod
     def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
         pass
