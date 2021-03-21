@@ -1,5 +1,5 @@
-from model.MLP import MLP, Softmax, ReLU, TanH
-from utils.utils import evaluate_acc, RUN_DATE
+from model.OneLayer import OneLayer
+from utils.activation import *
 
 import sys
 from pathlib import Path
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
 
 #     mlp = MLP(batch_size=10,base_learn_rate=0.008, reg_lambda=0.7)
-    mlp = MLP(batch_size=20,learn_rate_init=0.0008, reg_lambda=0.7)
+    mlp = OneLayer(batch_size=20,learn_rate_init=0.0008, reg_lambda=0.7)
     mlp.init_model(1, {
         "input_dim": 28*28,
         "hidden_dim": 256,
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         "output_fnc": Softmax()
     })
 
-    mlp.fit(train_array, y_train, test_array, y_test, num_epochs=40)
+    mlp.fit(train_array, y_train, test_array, y_test, num_epochs=10)
 
     y_pred = mlp.predict(test_array)
-    logging.info(f"accuracy {evaluate_acc(y_pred, y_test)}")
+    logging.info(f"Final test accuracy {mlp.compute_acc(test_array, y_test)}")
