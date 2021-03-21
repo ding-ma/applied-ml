@@ -8,6 +8,7 @@ from keras.datasets import mnist
 from itertools import chain
 import logging
 
+
 def __apply_generator(img_gen, X_train, y_train):
     img_gen.fit(X_train, seed=1)
     return img_gen.flow(X_train, y_train, batch_size=1, shuffle=True)
@@ -44,15 +45,17 @@ def __apply_all_augmentation(X_train, y_train):
     )
     return __apply_generator(img_gen, X_train, y_train)
 
+
 def __gen_to_numpy(gen):
     logging.info("Generator to Numpy Start")
     x_list = []
     y_list = []
     for e in gen:
-        x_list.append(e[0].reshape(1, 28*28))
+        x_list.append(e[0].reshape(1, 28 * 28))
         y_list.append(e[1])
     logging.info("Generator to Numpy End")
     return np.concatenate(x_list), np.array(y_list)
+
 
 def aquire_data(threshold, normalize, augment_data):
 
@@ -90,6 +93,10 @@ def aquire_data(threshold, normalize, augment_data):
     if threshold:
         logging.info("Performing threshold")
         black_or_white = np.vectorize(lambda x: 0 if x < 0.5 else 1)
-        return __gen_to_numpy(map(lambda x: (black_or_white(x[0]), x[1]), train_generator)), X_test.reshape(X_test.shape[0], 28 * 28), y_test
+        return (
+            __gen_to_numpy(map(lambda x: (black_or_white(x[0]), x[1]), train_generator)),
+            X_test.reshape(X_test.shape[0], 28 * 28),
+            y_test,
+        )
 
     return __gen_to_numpy(train_generator), X_test.reshape(X_test.shape[0], 28 * 28), y_test

@@ -22,9 +22,19 @@ class OneLayer(AbstractMLP):
         reg_lambda=1e-2,
         anneal=True,
         num_epochs=50,
-        L2 = False,
+        L2=False,
     ):
-        super().__init__(model_config["input_dim"], model_config["output_dim"], model_config["output_fnc"],learn_rate_init, batch_size, reg_lambda, anneal,num_epochs,L2)
+        super().__init__(
+            model_config["input_dim"],
+            model_config["output_dim"],
+            model_config["output_fnc"],
+            learn_rate_init,
+            batch_size,
+            reg_lambda,
+            anneal,
+            num_epochs,
+            L2,
+        )
         self.hidden_dim: int = model_config["hidden_dim"]
         self.hiddent_fnc: ActivationFunction = model_config["hiddent_fnc"]
 
@@ -34,15 +44,14 @@ class OneLayer(AbstractMLP):
         self.W2 = np.random.randn(self.hidden_dim, self.output_dim) / np.sqrt(self.hidden_dim)
         self.b2 = np.zeros((1, self.output_dim))
 
-        self.file_name =  f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
-
+        self.file_name = f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
 
     def forward_prop(self, X):
         self.z1 = X.dot(self.W1) + self.b1
         self.a1 = self.hiddent_fnc(self.z1)
         self.z2 = self.a1.dot(self.W2) + self.b2
 
-        self.delta = self.output_fnc(self.z2)    
+        self.delta = self.output_fnc(self.z2)
 
     def backward_pop(self, num_data, X, y, learn_rate):
         self.delta[range(num_data), y] -= 1
@@ -63,13 +72,12 @@ class OneLayer(AbstractMLP):
         self.W2 += -learn_rate * dW2
         self.b2 += -learn_rate * db2
 
-
     def compute_loss(self, X, y):
         num_data = X.shape[0]
 
         # Forward prop to compute predictions
         z1 = X.dot(self.W1) + self.b1
-        a1 = self.hiddent_fnc(z1) 
+        a1 = self.hiddent_fnc(z1)
 
         z2 = a1.dot(self.W2) + self.b2
         initial_probs = self.output_fnc(z2)
@@ -83,4 +91,3 @@ class OneLayer(AbstractMLP):
 
         out = (1.0 / num_data) * loss
         return out
-   

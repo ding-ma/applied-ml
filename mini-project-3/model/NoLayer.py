@@ -21,27 +21,27 @@ class NoLayer(AbstractMLP):
         batch_size=4,
         reg_lambda=1e-2,
         anneal=True,
-        num_epochs = 50,
-        L2 = False,
+        num_epochs=50,
+        L2=False,
     ):
         super().__init__(
-            model_config["input_dim"], 
-            model_config["output_dim"], 
+            model_config["input_dim"],
+            model_config["output_dim"],
             model_config["output_fnc"],
-            learn_rate_init, 
-            batch_size, 
-            reg_lambda, 
-            anneal, 
+            learn_rate_init,
+            batch_size,
+            reg_lambda,
+            anneal,
             num_epochs,
-            L2)
-        
+            L2,
+        )
+
         self.W1 = np.random.randn(self.input_dim, self.output_dim) / np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.output_dim))
 
-        self.file_name =  f"{RUN_DATE}_no_layer_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
+        self.file_name = f"{RUN_DATE}_no_layer_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
 
-
-    def compute_loss(self, X,y):
+    def compute_loss(self, X, y):
         num_data = X.shape[0]
         z1 = X.dot(self.W1) + self.b1
 
@@ -53,11 +53,10 @@ class NoLayer(AbstractMLP):
 
         out = (1.0 / num_data) * loss
         return out
-    
-    
+
     def forward_prop(self, X):
         self.z1 = X.dot(self.W1) + self.b1
-        
+
         self.delta = self.output_fnc(self.z1)
 
     def backward_pop(self, num_data, X, y, learn_rate):

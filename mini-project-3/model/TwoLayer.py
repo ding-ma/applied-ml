@@ -15,14 +15,7 @@ from model.AbstractMLP import AbstractMLP
 
 class TwoLayer(AbstractMLP):
     def __init__(
-        self,
-        model_config,
-        learn_rate_init=0.01,
-        batch_size=4,
-        reg_lambda=1e-2,
-        anneal=True,
-        num_epochs=50,
-        L2=False
+        self, model_config, learn_rate_init=0.01, batch_size=4, reg_lambda=1e-2, anneal=True, num_epochs=50, L2=False
     ):
         super().__init__(
             model_config["input_dim"],
@@ -33,7 +26,7 @@ class TwoLayer(AbstractMLP):
             reg_lambda,
             anneal,
             num_epochs,
-            L2
+            L2,
         )
 
         self.hidden_1_dim: int = model_config["hidden_1_dim"]
@@ -84,7 +77,7 @@ class TwoLayer(AbstractMLP):
         self.a2 = self.hiddent_2_fnc(self.z2)
         self.z3 = self.a2.dot(self.W3) + self.b3
 
-        self.delta = self.output_fnc(self.z3)    
+        self.delta = self.output_fnc(self.z3)
 
     def backward_pop(self, num_data, X, y, learn_rate):
         self.delta[range(num_data), y] -= 1
