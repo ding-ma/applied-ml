@@ -21,7 +21,7 @@ class Sigmoid(ActivationFunction):
         return self.__call__(x) * (1 - self.__call__(x))
 
     def __repr__(self):
-        return "Signmoid activation"
+        return "Signmoid"
 
 class Softmax(ActivationFunction):
     def __call__(self, x):
@@ -34,7 +34,7 @@ class Softmax(ActivationFunction):
         return p * (1 - p)
     
     def __repr__(self):
-        return "Softmax activation"
+        return "Softmax"
 
 class TanH(ActivationFunction):
     def __call__(self, x):
@@ -44,7 +44,7 @@ class TanH(ActivationFunction):
         return 1 - np.power(x, 2)
     
     def __repr__(self):
-        return "ThanH activation"
+        return "TanH"
 
 class ReLU(ActivationFunction):
     def __call__(self, x):
@@ -54,4 +54,4 @@ class ReLU(ActivationFunction):
         return np.where(x >= 0, 1, 0)
     
     def __repr__(self):
-        return "ReLU activation"
+        return "ReLU"

@@ -26,6 +26,7 @@ class AbstractMLP(ABC):
         self.loss_history = []
         self.train_acc_history = []
         self.test_acc_history = []
+        self.file_name = ""
     
     @abstractmethod
     def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
@@ -50,6 +51,6 @@ class AbstractMLP(ABC):
     def predict(self, x):
         pass
 
-    def save(self):
-        save_path = Path().cwd().joinpath("pickles").joinpath(f"{RUN_DATE}.pkl")
+    def save(self, name):
+        save_path = Path().cwd().joinpath("pickles").joinpath(self.file_name + ".pkl")
         joblib.dump(self, save_path, compress=1)

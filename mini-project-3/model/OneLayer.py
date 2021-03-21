@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 import numpy as np
 import logging
-from utils.activation import ActivationFunction
+from utils.activation import ActivationFunction, RUN_DATE
 import logging
 from model.AbstractMLP import AbstractMLP
 
@@ -31,6 +31,9 @@ class OneLayer(AbstractMLP):
 
         self.W2 = np.random.randn(self.hidden_dim, self.output_dim) / np.sqrt(self.hidden_dim)
         self.b2 = np.zeros((1, self.output_dim))
+
+        self.file_name =  f"{RUN_DATE}_one_layer_{self.hidden_dim}_{self.hiddent_fnc}"
+
 
     def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
         self.num_iterations = int(train_array.shape[0] / self.batch_size)
@@ -129,3 +132,4 @@ class OneLayer(AbstractMLP):
 
         labels = np.argmax(probs, axis=1)
         return labels
+    

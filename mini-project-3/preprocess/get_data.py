@@ -6,7 +6,7 @@ import pandas as pd
 from keras.preprocessing.image import ImageDataGenerator
 from keras.datasets import mnist
 from itertools import chain
-
+import logging
 
 def __apply_generator(img_gen, X_train, y_train):
     img_gen.fit(X_train, seed=1)
@@ -44,6 +44,15 @@ def __apply_all_augmentation(X_train, y_train):
     )
     return __apply_generator(img_gen, X_train, y_train)
 
+def __gen_to_numpy(gen):
+    logging.info("Generator to Numpy Start")
+    x_list = []
+    y_list = []
+    for e in gen:
+        x_list.append(e[0].reshape(1, 28*28))
+        y_list.append(e[1])
+    logging.info("Generator to Numpy End")
+    return np.concatenate(x_list), np.array(y_list)
 
 def aquire_data(threshold, normalize, augment_data):
 
@@ -59,22 +68,28 @@ def aquire_data(threshold, normalize, augment_data):
     train_generator = chain(zip(X_train, y_train))
     # train_generator = chain()
     if augment_data.get("rotate", None):
+        logging.info("Performing rotate")
         train_generator = chain(train_generator, __rotate_image(X_train, y_train))
 
     if augment_data.get("shift", None):
+        logging.info("Performing shift")
         train_generator = chain(train_generator, __shift_image(X_train, y_train))
 
     if augment_data.get("zoom", None):
+        logging.info("Performing zoom")
         train_generator = chain(train_generator, __zoom_image(X_train, y_train))
 
     if augment_data.get("shear", None):
+        logging.info("Performing shear")
         train_generator = chain(train_generator, __shear_image(X_train, y_train))
 
     if augment_data.get("all", None):
+        logging.info("Performing all")
         train_generator = chain(train_generator, __apply_all_augmentation(X_train, y_train))
 
     if threshold:
+        logging.info("Performing threshold")
         black_or_white = np.vectorize(lambda x: 0 if x < 0.5 else 1)
-        return map(lambda x: (black_or_white(x[0]), x[1]), train_generator), zip(X_test, y_test)
+        return __gen_to_numpy(map(lambda x: (black_or_white(x[0]), x[1]), train_generator)), X_test.reshape(X_test.shape[0], 28 * 28), y_test
 
-    return train_generator, zip(X_test, y_test)
+    return __gen_to_numpy(train_generator), X_test.reshape(X_test.shape[0], 28 * 28), y_test

@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 import numpy as np
 import logging
-from utils.activation import ActivationFunction
+from utils.activation import ActivationFunction, RUN_DATE
 import logging
 from model.AbstractMLP import AbstractMLP
 
@@ -27,6 +27,8 @@ class NoLayer(AbstractMLP):
         
         self.W1 = np.random.randn(self.input_dim, self.output_dim) / np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.output_dim))
+
+        self.file_name =  f"{RUN_DATE}_no_layer"
 
     def fit(self, train_array, train_labels_array, x_test=None, y_test=None, num_epochs=50):
         self.num_iterations = int(train_array.shape[0] / self.batch_size)
