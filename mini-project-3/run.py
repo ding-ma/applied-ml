@@ -46,61 +46,62 @@ import numpy as np
 
 np.random.seed(0)
 
-model_config = {
-    "input_dim": 28 * 28,
-    "hidden_1_dim": 256,
-    "hidden_2_dim": 128,
-    "output_dim": 10,
-    "hiddent_1_fnc": ReLU(),
-    "hiddent_2_fnc": ReLU(),
-    "output_fnc": Softmax(),
-}
+for bs in [50,250,500]:
+    model_config = {
+        "input_dim": 28 * 28,
+        "hidden_1_dim": 128,
+        "hidden_2_dim": 128,
+        "output_dim": 10,
+        "hiddent_1_fnc": ReLU(),
+        "hiddent_2_fnc": ReLU(),
+        "output_fnc": Softmax(),
+    }
 
-gradient_config = {
-    "batch_size": 10,
-    "learn_rate_init": 0.0002,
-    "reg_lambda": 0.1,
-    "num_epochs": 20,
-    "L2": True,
-    "anneal": True,
-    "early_stop": 0,
-}
+    gradient_config = {
+        "batch_size": bs,
+        "learn_rate_init": 0.0002,
+        "reg_lambda": 0.1,
+        "num_epochs": 10,
+        "L2": True,
+        "anneal": True,
+        "early_stop": 0,
+    }
 
-preprocess_param = {
-    "threshold": True,
-    "normalize": True,
-    "augment_data": True,
-}
+    preprocess_param = {
+        "threshold": False,
+        "normalize": True,
+        "augment_data": False,
+    }
 
-mlp = TwoLayer(model_config, **gradient_config)
+    mlp = TwoLayer(model_config, **gradient_config)
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)-8s %(message)s",
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
-        logging.StreamHandler(sys.stdout),
-    ],
-)
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)-8s %(message)s",
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[
+            logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
+            logging.StreamHandler(sys.stdout),
+        ],
+    )
 
-experiment_description = f"""
-Gradient Parameters
-{gradient_config}
+    experiment_description = f"""
+    Gradient Parameters
+    {gradient_config}
 
-Preprocess Parameters
-{preprocess_param}
+    Preprocess Parameters
+    {preprocess_param}
 
-Model Parameters
-{model_config}
-"""
-logging.info(experiment_description)
+    Model Parameters
+    {model_config}
+    """
+    logging.info(experiment_description)
 
-train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
+    train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
 
-mlp.fit(train_array, y_train, test_array, y_test)
-y_pred = mlp.predict(test_array)
+    mlp.fit(train_array, y_train, test_array, y_test)
+    y_pred = mlp.predict(test_array)
 
-logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
-mlp.save()
-mlp.plot(y_test, y_pred)
+    logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
+    mlp.save()
+    mlp.plot(y_test, y_pred)
