@@ -44,75 +44,63 @@ import numpy as np
 # }
 # mlp = OneLayer(model_config_1_layer, **gradient_config)
 
-if __name__ == "__main__":
-    np.random.seed(0)
+np.random.seed(0)
 
-    model_config = {
-        "input_dim": 28 * 28,
-        "hidden_1_dim": 256,
-        "hidden_2_dim": 128,
-        "output_dim": 10,
-        "hiddent_1_fnc": ReLU(),
-        "hiddent_2_fnc": ReLU(),
-        "output_fnc": Softmax(),
-    }
+model_config = {
+    "input_dim": 28 * 28,
+    "hidden_1_dim": 256,
+    "hidden_2_dim": 128,
+    "output_dim": 10,
+    "hiddent_1_fnc": ReLU(),
+    "hiddent_2_fnc": ReLU(),
+    "output_fnc": Softmax(),
+}
 
-    gradient_config = {
-        "batch_size": 10,
-        "learn_rate_init": 0.0002,
-        "reg_lambda": 0.1,
-        "num_epochs": 20,
-        "L2": True,
-        "anneal": True,
-        "early_stop": 0,
-    }
+gradient_config = {
+    "batch_size": 10,
+    "learn_rate_init": 0.0002,
+    "reg_lambda": 0.1,
+    "num_epochs": 20,
+    "L2": True,
+    "anneal": True,
+    "early_stop": 0,
+}
 
-    preprocess_param = {
-        "threshold": False,
-        "normalize": True,
-        "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False},
-    }
+preprocess_param = {
+    "threshold": True,
+    "normalize": True,
+    "augment_data": True,
+}
 
+mlp = TwoLayer(model_config, **gradient_config)
 
-    for i in range(1,5):
-        slice_data = i*10000
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
 
-        mlp = TwoLayer(model_config, **gradient_config)
+experiment_description = f"""
+Gradient Parameters
+{gradient_config}
 
-        mlp.file_name += f"_n_train({slice_data})"
+Preprocess Parameters
+{preprocess_param}
 
-        logging.basicConfig(
-            format="%(asctime)s %(levelname)-8s %(message)s",
-            level=logging.INFO,
-            datefmt="%Y-%m-%d %H:%M:%S",
-            handlers=[
-                logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
-                logging.StreamHandler(sys.stdout),
-            ],
-        )
+Model Parameters
+{model_config}
+"""
+logging.info(experiment_description)
 
-        experiment_description = f"""
-        Testing early stop
+train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
 
-        Gradient Parameters
-        {gradient_config}
+mlp.fit(train_array, y_train, test_array, y_test)
+y_pred = mlp.predict(test_array)
 
-        Preprocess Parameters
-        {preprocess_param}
-
-        Model Parameters
-        {model_config}
-
-        Train size
-        {slice_data}
-        """
-        logging.info(experiment_description)
-
-        (train_array, y_train), test_array, y_test = aquire_data(**preprocess_param)
-
-        mlp.fit(train_array[:slice_data], y_train[:slice_data], test_array, y_test)
-        y_pred = mlp.predict(test_array)
-
-        logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
-        mlp.save()
-        mlp.plot(y_test, y_pred)
+logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
+mlp.save()
+mlp.plot(y_test, y_pred)
