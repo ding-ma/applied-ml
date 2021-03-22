@@ -72,15 +72,3 @@ class ReLU(ActivationFunction):
 
     def __repr__(self):
         return "ReLU"
-
-class LeakyReLU(ActivationFunction):
-    def __call__(self,x):
-        return np.maximum(.01 * x,x)
-
-    def gradient(self, x):
-        dx = np.ones_like(x)
-        dx[x < 0] = .01
-        return dx
-    
-    def __repr__(self):
-        return "LeakyRelu"
