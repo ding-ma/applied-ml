@@ -27,9 +27,22 @@ class Sigmoid(ActivationFunction):
 
 
 class Softmax(ActivationFunction):
-    def __call__(self, x):
-        power = np.exp(x)
-        return power / np.sum(power, axis=-1, keepdims=True)
+    def __call__(self, x, axis=1):
+        # source: https://stackoverflow.com/questions/43401593/softmax-of-a-large-number-errors-out
+        # save typing...
+        kw = dict(axis=axis, keepdims=True)
+
+        # make every value 0 or below, as exp(0) won't overflow
+        xrel = x - x.max(**kw)
+
+        # if you wanted better handling of small exponents, you could do something like this
+        # to try and make the values as large as possible without overflowing, The 0.9
+        # is a fudge factor to try and ignore rounding errors
+        #
+        #     xrel += np.log(np.finfo(float).max / x.shape[axis]) * 0.9
+
+        exp_xrel = np.exp(xrel)
+        return exp_xrel / exp_xrel.sum(**kw) 
 
     def gradient(self, x):
         p = self.__call__(x)
@@ -59,3 +72,15 @@ class ReLU(ActivationFunction):
 
     def __repr__(self):
         return "ReLU"
+
+class LeakyReLU(ActivationFunction):
+    def __call__(self,x):
+        return np.maximum(.01 * x,x)
+
+    def gradient(self, x):
+        dx = np.ones_like(x)
+        dx[x < 0] = .01
+        return dx
+    
+    def __repr__(self):
+        return "LeakyRelu"
