@@ -1,64 +1,111 @@
-from model.MLP import MLP
-from utils.utils import evaluate_acc, RUN_DATE
+from model import *
+from utils.activation import *
+
+import sys
+from pathlib import Path
+import tensorflow as tf
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+import pandas as pd
+
 import logging
 import sys
 from datetime import datetime
 import inspect
+
 from preprocess.get_data import aquire_data
+from itertools import islice
+import numpy as np
 
 
-# make sure this dictionary has the same variable names as the constructor of MLP
-MLP_params = {
-    "activation_fnc": lambda x: x + 1,
-    "weight": 20000,
-    "bias": 0.001,
-    "n_hidden_layers": 2,
-    "n_units_hidden_layers": 64,
+# data_preprocess_config = {
+#     "threshold": False,
+#     "normalize": True,
+#     "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
+# }
+
+# gradient_config = {"batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15, "L2": False}
+
+# model_config_0_layer = {
+#     "input_dim": 28*28,
+#     "output_dim": 10,
+#     "output_fnc": Softmax(),
+# }
+# mlp = NoLayer(model_config_0_layer, **gradient_config)
+
+# model_config_1_layer = {
+#     "input_dim": 28 * 28,
+#     "hidden_dim": 128,
+#     "output_dim": 10,
+#     "hiddent_fnc": ReLU(),
+#     "output_fnc": Softmax(),
+# }
+# mlp = OneLayer(model_config_1_layer, **gradient_config)
+
+np.random.seed(0)
+
+model_config = {
+    "input_dim": 28 * 28,
+    # "hidden_dim": 128,
+    "hidden_1_dim": 128,
+    "hidden_2_dim": 128,
+    "output_dim": 10,
+    # "hiddent_fnc": ReLU(),
+    "hiddent_1_fnc": ReLU(),
+    "hiddent_2_fnc": ReLU(),
+    "output_fnc": Softmax(),
 }
 
-data_preprocess_params = {
-    "threshold": True,
+gradient_config = {
+    "batch_size": 10,
+    "learn_rate_init": 0.0002,
+    "reg_lambda": 0.1,
+    "num_epochs": 10,
+    "L2": False,
+    "anneal": True,
+    "early_stop": 0,
+}
+
+preprocess_param = {
+    "threshold": False,
     "normalize": True,
-    "augment_data": {"rotate": True, "shift": True, "zoom": True, "shear": True, "all": True},
+    "augment_data": False,
 }
 
-if __name__ == "__main__":
-    
-    # turn lambda into string
-    params_to_log = MLP_params
-    params_to_log["activation_fnc"] = ":".join(
-        inspect.getsourcelines(MLP_params["activation_fnc"])[0][0].strip().split(":")[1:]
-    )
+mlp = TwoLayer(model_config, **gradient_config)
 
-    experiment_description = f"""
-    some description about your experiment
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(filename=f"logs/{mlp.file_name}.log"),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
 
-    Experiment Parameters
-    {params_to_log}
+experiment_description = f"""
+Rerun of exp with new Softmax fnc
+https://github.com/ding-ma/applied-ml/blob/experiments/mini-project-3/plots/03-21_190052_two_layer_128_ReLU_128_ReLU_L2(False)_LR(0.0002)_BS(10)_cm.png
 
-    Preprocess Parameters
-    {data_preprocess_params}
-    """
+Gradient Parameters
+{gradient_config}
 
-    file_name = ""  # optional
+Preprocess Parameters
+{preprocess_param}
 
+Model Parameters
+{model_config}
+"""
+logging.info(experiment_description)
 
-    logging.basicConfig(
-        format="%(asctime)s %(levelname)-8s %(message)s",
-        level=logging.INFO,
-        datefmt="%Y-%m-%d %H:%M:%S",
-        handlers=[
-            # TODO: uncooment when ready to run real tests
-            # logging.FileHandler(filename=f"logs/{RUN_DATE}-{file_name}.log"),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
+train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
 
+mlp.fit(train_array, y_train, test_array, y_test)
+y_pred = mlp.predict(test_array)
 
-    logging.info(experiment_description)
-
-    # TODO: add kFold CV
-    train, test = aquire_data(**data_preprocess_params)
-
-    # model = MLP(**MLP_params)
-    # model.fit(1, 2, 3, 4)
+logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
+mlp.save()
+mlp.plot(y_test, y_pred)

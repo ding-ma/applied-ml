@@ -1,6 +1,0 @@
-2021-03-07 21:54:47 INFO     
-some description about your experiment
-
-Experiment Parameters
-{'activation_fnc': ' lambda x: x + 1,', 'weight': 20000, 'bias': 0.001, 'n_hidden_layers': 2, 'n_units_hidden_layers': 64} 
-
