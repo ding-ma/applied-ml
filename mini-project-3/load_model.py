@@ -48,3 +48,15 @@ sns.lineplot(data=df[:10])
 df = pd.read_csv("/home/ding/applied-ml/mini-project-3/all_runs.csv")
 sns.lineplot(data=df)
 plt.legend(bbox_to_anchor=(1.04,1), loc="upper left")
+
+#%%
+d = {}
+files = Path('pickles').glob("*.pkl")
+for file in files:
+    model: AbstractMLP = joblib.load(file)
+    d[file.stem + "_test_acc"] = model.test_acc_history
+    d[file.stem + "_train_acc"] = model.train_acc_history
+    d[file.stem + "_loss"] = model.loss_history
+
+df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+df.to_csv('all_runs.csv', index=False)

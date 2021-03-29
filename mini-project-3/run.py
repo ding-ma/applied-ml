@@ -105,16 +105,6 @@ train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
 mlp.fit(train_array, y_train, test_array, y_test)
 mlp.save()
 
-preprocess_param = {
-    "threshold": True,
-    "normalize": True,
-    "augment_data": True,
-}
-logging.info("Starting to train on augmented data")
-train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
-mlp.fit(train_array, y_train, test_array, y_test)
-
-
 y_pred = mlp.predict(test_array)
 
 logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")

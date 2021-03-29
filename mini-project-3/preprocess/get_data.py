@@ -19,20 +19,20 @@ def __shift(pos, img):
 
 
 def aquire_data(threshold, normalize, augment_data):
-        """ Process data. Warning, augmenting the dataset requires 12GB or ram
-        :type threshold: bool
-        :param threshold: Turn image blakc or white
-    
-        :type normalize: bool
-        :param normalize: return normalized data
-    
-        :type augment_data:bool
-        :param augment_data: augments train dataset by rotating and translating
-    
-        :raises:
-    
-        :rtype: np.array
-        """# load dataset
+    """ Process data. Warning, augmenting the dataset requires 12GB or ram
+    :type threshold: bool
+    :param threshold: Turn image blakc or white
+
+    :type normalize: bool
+    :param normalize: return normalized data
+
+    :type augment_data:bool
+    :param augment_data: augments train dataset by rotating and translating
+
+    :raises:
+
+    :rtype: np.array
+    """# load dataset
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 
