@@ -48,13 +48,13 @@ import joblib
 
 model_config = {
     "input_dim": 28 * 28,
-    "hidden_dim": 256,
-    # "hidden_1_dim": 256,
-    # "hidden_2_dim": 128,
+    # "hidden_dim": 256,
+    "hidden_1_dim": 128,
+    "hidden_2_dim": 128,
     "output_dim": 10,
-    "hiddent_fnc": Sigmoid(),
-    # "hiddent_1_fnc": ReLU(),
-    # "hiddent_2_fnc": ReLU(),
+    # "hiddent_fnc": Sigmoid(),
+    "hiddent_1_fnc": ReLU(),
+    "hiddent_2_fnc": ReLU(),
     "output_fnc": Softmax(),
 }
 
@@ -63,18 +63,18 @@ gradient_config = {
     "learn_rate_init": 0.002,
     "reg_lambda": 0.1,
     "num_epochs": 20,
-    "L2": True,
+    "L2": False,
     "anneal": True,
     "early_stop": 0,
 }
 
 preprocess_param = {
     "threshold": False,
-    "normalize": True,
+    "normalize": False,
     "augment_data": False,
 }
 
-mlp = OneLayer(model_config, **gradient_config)
+mlp = TwoLayer(model_config, **gradient_config)
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",

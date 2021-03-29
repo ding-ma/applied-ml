@@ -39,7 +39,7 @@ class Softmax(ActivationFunction):
         # to try and make the values as large as possible without overflowing, The 0.9
         # is a fudge factor to try and ignore rounding errors
         #
-        #     xrel += np.log(np.finfo(float).max / x.shape[axis]) * 0.9
+        xrel += np.log(np.finfo(float).max / x.shape[axis]) * 0.9
 
         exp_xrel = np.exp(xrel)
         return exp_xrel / exp_xrel.sum(**kw) 
@@ -65,10 +65,10 @@ class TanH(ActivationFunction):
 
 class ReLU(ActivationFunction):
     def __call__(self, x):
-        return np.where(x >= 0, x, 0)
+        return np.where(x > 0, x, 0)
 
     def gradient(self, x):
-        return np.where(x >= 0, 1, 0)
+        return np.where(x > 0, 1, 0)
 
     def __repr__(self):
         return "ReLU"
