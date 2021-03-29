@@ -19,7 +19,20 @@ def __shift(pos, img):
 
 
 def aquire_data(threshold, normalize, augment_data):
-    # load dataset
+        """ Process data. Warning, augmenting the dataset requires 12GB or ram
+        :type threshold: bool
+        :param threshold: Turn image blakc or white
+    
+        :type normalize: bool
+        :param normalize: return normalized data
+    
+        :type augment_data:bool
+        :param augment_data: augments train dataset by rotating and translating
+    
+        :raises:
+    
+        :rtype: np.array
+        """# load dataset
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 
@@ -32,10 +45,10 @@ def aquire_data(threshold, normalize, augment_data):
         logging.info("Performing data augmentation")
 
         # simple data augmentation
-        r_left = __rotate(-30, X_train)
-        r_right = __rotate(30, X_train)
-        s_down = __shift((2,2), X_train)
-        s_up = __shift((-2,-2), X_train)
+        r_left = __rotate(-10, X_train)
+        r_right = __rotate(10, X_train)
+        s_down = __shift((1,1), X_train)
+        s_up = __shift((-1,-1), X_train)
 
         # 300k datapoints after
         X_train = np.concatenate([r_left, r_right, s_up, s_down, X_train])

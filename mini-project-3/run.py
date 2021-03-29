@@ -18,7 +18,7 @@ import inspect
 from preprocess.get_data import aquire_data
 from itertools import islice
 import numpy as np
-
+import joblib
 
 # data_preprocess_config = {
 #     "threshold": False,
@@ -59,17 +59,17 @@ model_config = {
 }
 
 gradient_config = {
-    "batch_size": 10,
+    "batch_size": 50,
     "learn_rate_init": 0.0002,
     "reg_lambda": 0.1,
-    "num_epochs": 10,
-    "L2": False,
+    "num_epochs": 25,
+    "L2": True,
     "anneal": True,
     "early_stop": 0,
 }
 
 preprocess_param = {
-    "threshold": False,
+    "threshold": True,
     "normalize": True,
     "augment_data": False,
 }
@@ -87,8 +87,7 @@ logging.basicConfig(
 )
 
 experiment_description = f"""
-Rerun of exp with new Softmax fnc
-https://github.com/ding-ma/applied-ml/blob/experiments/mini-project-3/plots/03-21_190052_two_layer_128_ReLU_128_ReLU_L2(False)_LR(0.0002)_BS(10)_cm.png
+normal dataset then augmented
 
 Gradient Parameters
 {gradient_config}
@@ -104,6 +103,18 @@ logging.info(experiment_description)
 train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
 
 mlp.fit(train_array, y_train, test_array, y_test)
+mlp.save()
+
+preprocess_param = {
+    "threshold": True,
+    "normalize": True,
+    "augment_data": True,
+}
+logging.info("Starting to train on augmented data")
+train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
+mlp.fit(train_array, y_train, test_array, y_test)
+
+
 y_pred = mlp.predict(test_array)
 
 logging.info(f"Final test accuracy {mlp.compute_acc(y_pred, y_test)}")
