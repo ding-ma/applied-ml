@@ -50,8 +50,8 @@ import joblib
 model_config = {
     "input_dim": 28 * 28,
     # "hidden_dim": 128,
-    "hidden_1_dim": 128,
-    "hidden_2_dim": 128,
+    "hidden_1_dim": 512,
+    "hidden_2_dim": 256,
     "output_dim": 10,
     # "hiddent_fnc": ReLU(),
     "hiddent_1_fnc": ReLU(),
@@ -61,10 +61,10 @@ model_config = {
 
 gradient_config = {
     "batch_size": 50,
-    "learn_rate_init": 0.2,
+    "learn_rate_init": 0.002,
     "reg_lambda": 0.1,
     "num_epochs": 20,
-    "L2": False,
+    "L2": True,
     "anneal": True,
     "early_stop": 0,
 }
