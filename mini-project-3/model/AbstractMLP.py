@@ -81,7 +81,7 @@ class AbstractMLP(ABC):
                 self.forward_prop(X)
                 self.backward_pop(num_data, X, y, learn_rate)
 
-                if i % 500 == 0:
+                if i % 250 == 0:
                     loss = self.compute_loss(X, y)
                     running_loss.append(loss)
                     logging.info(f"Loss {loss} at epoch {epoch} iteration {i}")
