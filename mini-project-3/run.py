@@ -44,37 +44,37 @@ import joblib
 # }
 # mlp = OneLayer(model_config_1_layer, **gradient_config)
 
-np.random.seed(0)
+# np.random.seed(0)
 
 model_config = {
     "input_dim": 28 * 28,
-    # "hidden_dim": 128,
-    "hidden_1_dim": 128,
-    "hidden_2_dim": 128,
+    "hidden_dim": 256,
+    # "hidden_1_dim": 256,
+    # "hidden_2_dim": 128,
     "output_dim": 10,
-    # "hiddent_fnc": ReLU(),
-    "hiddent_1_fnc": ReLU(),
-    "hiddent_2_fnc": ReLU(),
+    "hiddent_fnc": Sigmoid(),
+    # "hiddent_1_fnc": ReLU(),
+    # "hiddent_2_fnc": ReLU(),
     "output_fnc": Softmax(),
 }
 
 gradient_config = {
     "batch_size": 50,
-    "learn_rate_init": 0.0002,
+    "learn_rate_init": 0.002,
     "reg_lambda": 0.1,
-    "num_epochs": 25,
+    "num_epochs": 20,
     "L2": True,
     "anneal": True,
     "early_stop": 0,
 }
 
 preprocess_param = {
-    "threshold": True,
+    "threshold": False,
     "normalize": True,
     "augment_data": False,
 }
 
-mlp = TwoLayer(model_config, **gradient_config)
+mlp = OneLayer(model_config, **gradient_config)
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -87,7 +87,7 @@ logging.basicConfig(
 )
 
 experiment_description = f"""
-normal dataset then augmented
+Trying without np random and sigmoid
 
 Gradient Parameters
 {gradient_config}
