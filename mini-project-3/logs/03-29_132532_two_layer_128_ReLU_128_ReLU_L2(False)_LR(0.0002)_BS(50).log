@@ -1,0 +1,215 @@
+2021-03-29 13:25:34 INFO     
+Trying without np random and sigmoid
+
+Gradient Parameters
+{'batch_size': 50, 'learn_rate_init': 0.0002, 'reg_lambda': 0.1, 'num_epochs': 20, 'L2': False, 'anneal': True, 'early_stop': 0}
+
+Preprocess Parameters
+{'threshold': False, 'normalize': True, 'augment_data': False}
+
+Model Parameters
+{'input_dim': 784, 'hidden_1_dim': 128, 'hidden_2_dim': 128, 'output_dim': 10, 'hiddent_1_fnc': ReLU, 'hiddent_2_fnc': ReLU, 'output_fnc': Softmax}
+
+2021-03-29 13:25:35 INFO     Performing normalization
+2021-03-29 13:25:36 INFO     Loss 1.2793389978847785 at epoch 0 iteration 250
+2021-03-29 13:25:36 INFO     Loss 0.7046025618406917 at epoch 0 iteration 500
+2021-03-29 13:25:37 INFO     Loss 0.7428170291472787 at epoch 0 iteration 750
+2021-03-29 13:25:38 INFO     Loss 0.25368994297772257 at epoch 0 iteration 1000
+2021-03-29 13:25:48 INFO     
+            Epoch 0
+            Avg Loss: 0.7451121329626179
+            Train acc: 88.96666666666667
+            Test acc: 89.32
+            
+2021-03-29 13:25:49 INFO     Loss 0.36640915682832625 at epoch 1 iteration 250
+2021-03-29 13:25:50 INFO     Loss 0.20250641882966983 at epoch 1 iteration 500
+2021-03-29 13:25:50 INFO     Loss 0.49147407794578857 at epoch 1 iteration 750
+2021-03-29 13:25:51 INFO     Loss 0.19750693178842615 at epoch 1 iteration 1000
+2021-03-29 13:26:02 INFO     
+            Epoch 1
+            Avg Loss: 0.3144741463480527
+            Train acc: 90.54166666666667
+            Test acc: 91.16
+            
+2021-03-29 13:26:02 INFO     Loss 0.29362422185810716 at epoch 2 iteration 250
+2021-03-29 13:26:03 INFO     Loss 0.3309118427165751 at epoch 2 iteration 500
+2021-03-29 13:26:04 INFO     Loss 0.20955443029546125 at epoch 2 iteration 750
+2021-03-29 13:26:04 INFO     Loss 0.20336654093607773 at epoch 2 iteration 1000
+2021-03-29 13:26:15 INFO     
+            Epoch 2
+            Avg Loss: 0.2593642589515553
+            Train acc: 91.79166666666667
+            Test acc: 92.12
+            
+2021-03-29 13:26:16 INFO     Loss 0.2491814775379587 at epoch 3 iteration 250
+2021-03-29 13:26:17 INFO     Loss 0.5642460112463816 at epoch 3 iteration 500
+2021-03-29 13:26:17 INFO     Loss 0.25815820126637556 at epoch 3 iteration 750
+2021-03-29 13:26:18 INFO     Loss 0.1912382507009313 at epoch 3 iteration 1000
+2021-03-29 13:26:28 INFO     
+            Epoch 3
+            Avg Loss: 0.3157059851879118
+            Train acc: 92.65666666666667
+            Test acc: 92.71
+            
+2021-03-29 13:26:29 INFO     Loss 0.14980205591062695 at epoch 4 iteration 250
+2021-03-29 13:26:30 INFO     Loss 0.35211253379157936 at epoch 4 iteration 500
+2021-03-29 13:26:31 INFO     Loss 0.4074652818026862 at epoch 4 iteration 750
+2021-03-29 13:26:31 INFO     Loss 0.1861099043923503 at epoch 4 iteration 1000
+2021-03-29 13:26:42 INFO     
+            Epoch 4
+            Avg Loss: 0.27387244397431076
+            Train acc: 92.82833333333333
+            Test acc: 92.91
+            
+2021-03-29 13:26:43 INFO     Loss 0.23455807007474655 at epoch 5 iteration 250
+2021-03-29 13:26:44 INFO     Loss 0.19988725737605176 at epoch 5 iteration 500
+2021-03-29 13:26:44 INFO     Loss 0.16055372618431335 at epoch 5 iteration 750
+2021-03-29 13:26:45 INFO     Loss 0.14685890691677933 at epoch 5 iteration 1000
+2021-03-29 13:26:56 INFO     
+            Epoch 5
+            Avg Loss: 0.18546449013797278
+            Train acc: 92.88
+            Test acc: 92.93
+            
+2021-03-29 13:26:56 INFO     Loss 0.5480368118295591 at epoch 6 iteration 250
+2021-03-29 13:26:57 INFO     Loss 0.2126493916077309 at epoch 6 iteration 500
+2021-03-29 13:26:58 INFO     Loss 0.2661307068989135 at epoch 6 iteration 750
+2021-03-29 13:26:58 INFO     Loss 0.24265369893967742 at epoch 6 iteration 1000
+2021-03-29 13:27:09 INFO     
+            Epoch 6
+            Avg Loss: 0.31736765231897024
+            Train acc: 92.97833333333334
+            Test acc: 92.98
+            
+2021-03-29 13:27:10 INFO     Loss 0.20722425554125248 at epoch 7 iteration 250
+2021-03-29 13:27:10 INFO     Loss 0.19411732321161204 at epoch 7 iteration 500
+2021-03-29 13:27:11 INFO     Loss 0.20041180806914785 at epoch 7 iteration 750
+2021-03-29 13:27:12 INFO     Loss 0.27322168070128544 at epoch 7 iteration 1000
+2021-03-29 13:27:22 INFO     
+            Epoch 7
+            Avg Loss: 0.21874376688082448
+            Train acc: 93.01166666666667
+            Test acc: 93.05
+            
+2021-03-29 13:27:23 INFO     Loss 0.3524015950568545 at epoch 8 iteration 250
+2021-03-29 13:27:24 INFO     Loss 0.22391032232512353 at epoch 8 iteration 500
+2021-03-29 13:27:24 INFO     Loss 0.5637281105354486 at epoch 8 iteration 750
+2021-03-29 13:27:25 INFO     Loss 0.24751855961170816 at epoch 8 iteration 1000
+2021-03-29 13:27:36 INFO     
+            Epoch 8
+            Avg Loss: 0.3468896468822837
+            Train acc: 93.06
+            Test acc: 93.08
+            
+2021-03-29 13:27:36 INFO     Loss 0.180942810114308 at epoch 9 iteration 250
+2021-03-29 13:27:37 INFO     Loss 0.15312159169340425 at epoch 9 iteration 500
+2021-03-29 13:27:38 INFO     Loss 0.1589268710084648 at epoch 9 iteration 750
+2021-03-29 13:27:38 INFO     Loss 0.227523543118434 at epoch 9 iteration 1000
+2021-03-29 13:27:49 INFO     
+            Epoch 9
+            Avg Loss: 0.18012870398365277
+            Train acc: 93.11833333333334
+            Test acc: 93.1
+            
+2021-03-29 13:27:50 INFO     Loss 0.22714324220430127 at epoch 10 iteration 250
+2021-03-29 13:27:50 INFO     Loss 0.22878732640010652 at epoch 10 iteration 500
+2021-03-29 13:27:51 INFO     Loss 0.26703529025946565 at epoch 10 iteration 750
+2021-03-29 13:27:52 INFO     Loss 0.05995807311424014 at epoch 10 iteration 1000
+2021-03-29 13:28:02 INFO     
+            Epoch 10
+            Avg Loss: 0.1957309829945284
+            Train acc: 93.12333333333333
+            Test acc: 93.08
+            
+2021-03-29 13:28:03 INFO     Loss 0.1673371818139124 at epoch 11 iteration 250
+2021-03-29 13:28:04 INFO     Loss 0.17640639957282822 at epoch 11 iteration 500
+2021-03-29 13:28:04 INFO     Loss 0.2079393624481827 at epoch 11 iteration 750
+2021-03-29 13:28:05 INFO     Loss 0.2690162688410181 at epoch 11 iteration 1000
+2021-03-29 13:28:15 INFO     
+            Epoch 11
+            Avg Loss: 0.20517480316898534
+            Train acc: 93.14333333333333
+            Test acc: 93.18
+            
+2021-03-29 13:28:16 INFO     Loss 0.11918777462792772 at epoch 12 iteration 250
+2021-03-29 13:28:17 INFO     Loss 0.2861510634614872 at epoch 12 iteration 500
+2021-03-29 13:28:17 INFO     Loss 0.2085167011720842 at epoch 12 iteration 750
+2021-03-29 13:28:18 INFO     Loss 0.225804384479902 at epoch 12 iteration 1000
+2021-03-29 13:28:29 INFO     
+            Epoch 12
+            Avg Loss: 0.2099149809353503
+            Train acc: 93.15666666666667
+            Test acc: 93.16
+            
+2021-03-29 13:28:30 INFO     Loss 0.27094537776644034 at epoch 13 iteration 250
+2021-03-29 13:28:30 INFO     Loss 0.17346221271085902 at epoch 13 iteration 500
+2021-03-29 13:28:31 INFO     Loss 0.18474937346277165 at epoch 13 iteration 750
+2021-03-29 13:28:32 INFO     Loss 0.21441707083686304 at epoch 13 iteration 1000
+2021-03-29 13:28:42 INFO     
+            Epoch 13
+            Avg Loss: 0.2108935086942335
+            Train acc: 93.16333333333333
+            Test acc: 93.17
+            
+2021-03-29 13:28:42 INFO     Loss 0.2555511581495697 at epoch 14 iteration 250
+2021-03-29 13:28:43 INFO     Loss 0.17732397797265637 at epoch 14 iteration 500
+2021-03-29 13:28:44 INFO     Loss 0.2648363593039054 at epoch 14 iteration 750
+2021-03-29 13:28:44 INFO     Loss 0.23574919858192167 at epoch 14 iteration 1000
+2021-03-29 13:28:55 INFO     
+            Epoch 14
+            Avg Loss: 0.23336517350201327
+            Train acc: 93.165
+            Test acc: 93.18
+            
+2021-03-29 13:28:55 INFO     Loss 0.4378098312646465 at epoch 15 iteration 250
+2021-03-29 13:28:56 INFO     Loss 0.38833534613232323 at epoch 15 iteration 500
+2021-03-29 13:28:57 INFO     Loss 0.22264745814411405 at epoch 15 iteration 750
+2021-03-29 13:28:57 INFO     Loss 0.07148575004762493 at epoch 15 iteration 1000
+2021-03-29 13:29:07 INFO     
+            Epoch 15
+            Avg Loss: 0.28006959639717716
+            Train acc: 93.16833333333334
+            Test acc: 93.17
+            
+2021-03-29 13:29:08 INFO     Loss 0.16906754571305546 at epoch 16 iteration 250
+2021-03-29 13:29:09 INFO     Loss 0.3688152462965059 at epoch 16 iteration 500
+2021-03-29 13:29:10 INFO     Loss 0.21484634829540455 at epoch 16 iteration 750
+2021-03-29 13:29:10 INFO     Loss 0.23955615573659017 at epoch 16 iteration 1000
+2021-03-29 13:29:20 INFO     
+            Epoch 16
+            Avg Loss: 0.248071324010389
+            Train acc: 93.17166666666667
+            Test acc: 93.17
+            
+2021-03-29 13:29:21 INFO     Loss 0.26983722728280496 at epoch 17 iteration 250
+2021-03-29 13:29:22 INFO     Loss 0.1686689000135901 at epoch 17 iteration 500
+2021-03-29 13:29:22 INFO     Loss 0.13401495892123438 at epoch 17 iteration 750
+2021-03-29 13:29:23 INFO     Loss 0.3365934663474808 at epoch 17 iteration 1000
+2021-03-29 13:29:33 INFO     
+            Epoch 17
+            Avg Loss: 0.22727863814127755
+            Train acc: 93.175
+            Test acc: 93.18
+            
+2021-03-29 13:29:34 INFO     Loss 0.33417786323640875 at epoch 18 iteration 250
+2021-03-29 13:29:35 INFO     Loss 0.1312588440029282 at epoch 18 iteration 500
+2021-03-29 13:29:35 INFO     Loss 0.2231459986568752 at epoch 18 iteration 750
+2021-03-29 13:29:36 INFO     Loss 0.1563942926277571 at epoch 18 iteration 1000
+2021-03-29 13:29:46 INFO     
+            Epoch 18
+            Avg Loss: 0.2112442496309923
+            Train acc: 93.18
+            Test acc: 93.18
+            
+2021-03-29 13:29:47 INFO     Loss 0.1964353744186462 at epoch 19 iteration 250
+2021-03-29 13:29:47 INFO     Loss 0.3397448075830609 at epoch 19 iteration 500
+2021-03-29 13:29:48 INFO     Loss 0.2735912920863773 at epoch 19 iteration 750
+2021-03-29 13:29:49 INFO     Loss 0.23945760411176054 at epoch 19 iteration 1000
+2021-03-29 13:29:58 INFO     
+            Epoch 19
+            Avg Loss: 0.2623072695499612
+            Train acc: 93.18166666666667
+            Test acc: 93.18
+            
+2021-03-29 13:30:00 INFO     Final test accuracy 93.18
+2021-03-29 13:30:00 INFO     Making and Saving plots

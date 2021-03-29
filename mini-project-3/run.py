@@ -46,13 +46,14 @@ import joblib
 
 # np.random.seed(0)
 
+
 model_config = {
     "input_dim": 28 * 28,
-    # "hidden_dim": 256,
+    # "hidden_dim": 128,
     "hidden_1_dim": 128,
     "hidden_2_dim": 128,
     "output_dim": 10,
-    # "hiddent_fnc": Sigmoid(),
+    # "hiddent_fnc": ReLU(),
     "hiddent_1_fnc": ReLU(),
     "hiddent_2_fnc": ReLU(),
     "output_fnc": Softmax(),
@@ -60,7 +61,7 @@ model_config = {
 
 gradient_config = {
     "batch_size": 50,
-    "learn_rate_init": 0.002,
+    "learn_rate_init": 0.2,
     "reg_lambda": 0.1,
     "num_epochs": 20,
     "L2": False,
@@ -70,7 +71,7 @@ gradient_config = {
 
 preprocess_param = {
     "threshold": False,
-    "normalize": False,
+    "normalize": True,
     "augment_data": False,
 }
 

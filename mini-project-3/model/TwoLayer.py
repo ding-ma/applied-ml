@@ -35,13 +35,13 @@ class TwoLayer(AbstractMLP):
         self.hiddent_1_fnc: ActivationFunction = model_config["hiddent_1_fnc"]
         self.hiddent_2_fnc: ActivationFunction = model_config["hiddent_2_fnc"]
 
-        self.W1 = np.random.randn(self.input_dim, self.hidden_1_dim)*0.00000001/np.sqrt(self.input_dim)
+        self.W1 = np.random.randn(self.input_dim, self.hidden_1_dim)/np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.hidden_1_dim))
 
-        self.W2 = np.random.randn(self.hidden_1_dim, self.hidden_2_dim)*0.00000001 / np.sqrt(self.hidden_1_dim)
+        self.W2 = np.random.randn(self.hidden_1_dim, self.hidden_2_dim) / np.sqrt(self.hidden_1_dim)
         self.b2 = np.zeros((1, self.hidden_2_dim))
 
-        self.W3 = np.random.randn(self.hidden_2_dim, self.output_dim)*0.00000001 / np.sqrt(self.hidden_2_dim)
+        self.W3 = np.random.randn(self.hidden_2_dim, self.output_dim) / np.sqrt(self.hidden_2_dim)
         self.b3 = np.zeros((1, self.output_dim))
 
         self.file_name = f"{RUN_DATE}_two_layer_{self.hidden_1_dim}_{self.hiddent_1_fnc}_{self.hidden_2_dim}_{self.hiddent_2_fnc}_L2({self.L2})_LR({self.learn_rate_init})_BS({self.batch_size})"
