@@ -11,6 +11,18 @@ import itertools
 from sklearn.metrics import confusion_matrix
 
 #%%
+d = {}
+files = Path('pickles').glob("*.pkl")
+for file in files:
+    model: AbstractMLP = joblib.load(file)
+    d[file.stem + "_test_acc"] = model.test_acc_history
+    d[file.stem + "_train_acc"] = model.train_acc_history
+    d[file.stem + "_loss"] = model.loss_history
+
+df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
+df.to_csv('all_runs.csv', index=False)
+
+#%%
 ten:TwoLayer = joblib.load("/home/ding/applied-ml/mini-project-3/pickles/03-21_221051_two_layer_256_ReLU_128_ReLU_L2(True)_LR(0.0002)_BS(10)_n_train(10000).pkl")
 twenty:TwoLayer = joblib.load("/home/ding/applied-ml/mini-project-3/pickles/03-21_221051_two_layer_256_ReLU_128_ReLU_L2(True)_LR(0.0002)_BS(10)_n_train(20000).pkl")
 thirty:TwoLayer = joblib.load("/home/ding/applied-ml/mini-project-3/pickles/03-21_221051_two_layer_256_ReLU_128_ReLU_L2(True)_LR(0.0002)_BS(10)_n_train(30000).pkl")
