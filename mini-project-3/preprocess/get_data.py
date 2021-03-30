@@ -19,7 +19,7 @@ def __shift(pos, img):
 
 
 def aquire_data(threshold, normalize, augment_data):
-    """ Process data. Warning, augmenting the dataset requires 12GB or ram
+    """ Process data. *Warning*, augmenting the dataset requires 12GB of ram
     :type threshold: bool
     :param threshold: Turn image blakc or white
 
@@ -45,14 +45,16 @@ def aquire_data(threshold, normalize, augment_data):
         logging.info("Performing data augmentation")
 
         # simple data augmentation
-        r_left = __rotate(-10, X_train)
-        r_right = __rotate(10, X_train)
-        s_down = __shift((1,1), X_train)
-        s_up = __shift((-1,-1), X_train)
+        r_left_10 = __rotate(-10, X_train)
+        r_left_15 = __rotate(-15, X_train)
+        r_right_10 = __rotate(10, X_train)
+        r_right_15 = __rotate(15, X_train)
+        s_down_1_1 = __shift((1,1), X_train)
+        s_up_1_1 = __shift((-1,-1), X_train)
 
-        # 300k datapoints after
-        X_train = np.concatenate([r_left, r_right, s_up, s_down, X_train])
-        y_train = np.concatenate([y_train]*5)
+        # 360k datapoints after
+        X_train = np.concatenate([r_left_10, r_left_15,r_right_10,r_right_15, s_up_1_1, s_down_1_1])
+        y_train = np.concatenate([y_train]*6)
 
     if threshold:
         logging.info("Performing threshold")

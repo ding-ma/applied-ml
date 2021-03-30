@@ -72,10 +72,21 @@ gradient_config = {
 preprocess_param = {
     "threshold": False,
     "normalize": True,
-    "augment_data": False,
+    "augment_data": True,
 }
 
+pickle:TwoLayer = joblib.load("/home/ding/applied-ml/mini-project-3/pickles/03-29_135101_two_layer_512_ReLU_256_ReLU_L2(True)_LR(0.002)_BS(50).pkl")
 mlp = TwoLayer(model_config, **gradient_config)
+
+mlp.W1 = pickle.W1
+mlp.W2 = pickle.W2
+mlp.W3 = pickle.W3
+
+mlp.b1 = pickle.b1
+mlp.b2 = pickle.b2
+mlp.b3 = pickle.b3
+
+mlp.file_name += "_augmented_dataset(360k)"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -88,7 +99,8 @@ logging.basicConfig(
 )
 
 experiment_description = f"""
-Trying without np random and sigmoid
+Copied weights and bias from 03-29_135101_two_layer_512_ReLU_256_ReLU_L2(True)_LR(0.002)_BS(50).pkl
+and going to train on augmented dataset
 
 Gradient Parameters
 {gradient_config}

@@ -60,3 +60,19 @@ for file in files:
 
 df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.items() ]))
 df.to_csv('all_runs.csv', index=False)
+
+#%%
+preprocess_param = {
+    "threshold": False,
+    "normalize": True,
+    "augment_data": True,
+}
+train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
+
+mlp: TwoLayer = joblib.load("/home/ding/applied-ml/mini-project-3/pickles/03-29_220042_two_layer_512_ReLU_256_ReLU_L2(True)_LR(0.002)_BS(50)_augmented_dataset(360k).pkl")
+y_pred = mlp.predict(train_array)
+mlp.file_name += "_train_plots"
+mlp.plot(y_train, y_pred)
+
+
+# %%
