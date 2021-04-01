@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from utils.activation import ActivationFunction, RUN_DATE
+from utils.activation import ActivationFunction
 import joblib
 from pathlib import Path
 import logging
@@ -24,7 +24,7 @@ class AbstractMLP(ABC):
         anneal=True,
         num_epochs=50,
         L2=False,
-        early_stop=0
+        early_stop=0,
     ):
         self.learn_rate_init = learn_rate_init
         self.batch_size = batch_size
@@ -85,7 +85,7 @@ class AbstractMLP(ABC):
                     loss = self.compute_loss(X, y)
                     running_loss.append(loss)
                     logging.info(f"Loss {loss} at epoch {epoch} iteration {i}")
-            
+
             loss = sum(running_loss) / len(running_loss)
             self.loss_history.append(loss)
 
@@ -102,17 +102,14 @@ class AbstractMLP(ABC):
             Test acc: {test_acc}
             """
             logging.info(epoch_stats)
-            
+
             if self.early_stop:
-                tmp = pd.DataFrame({
-                    "loss": self.loss_history
-                })
-                tmp['avg'] = tmp.rolling(window=4).mean()
-                tmp['diff'] = (tmp['loss']-tmp['avg']).abs()
-                if tmp.iloc[[-1]]['diff'].values[0] < self.early_stop:
+                tmp = pd.DataFrame({"loss": self.loss_history})
+                tmp["avg"] = tmp.rolling(window=4).mean()
+                tmp["diff"] = (tmp["loss"] - tmp["avg"]).abs()
+                if tmp.iloc[[-1]]["diff"].values[0] < self.early_stop:
                     logging.info("Early Stop, training stopped")
                     break
-
 
     @abstractmethod
     def compute_loss(self, X, y):
@@ -128,7 +125,6 @@ class AbstractMLP(ABC):
 
     def compute_acc(self, y_true, y_pred):
         assert len(y_true) == len(y_pred)
-
         return 100 * np.sum(y_pred == y_true) / y_pred.shape[0]
 
     def predict(self, x):

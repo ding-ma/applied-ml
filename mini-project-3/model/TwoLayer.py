@@ -1,4 +1,3 @@
-# %%
 from datetime import datetime
 from pathlib import Path
 import numpy as np
@@ -15,7 +14,15 @@ from model.AbstractMLP import AbstractMLP
 
 class TwoLayer(AbstractMLP):
     def __init__(
-        self, model_config, learn_rate_init=0.01, batch_size=4, reg_lambda=1e-2, anneal=True, num_epochs=50, L2=False, early_stop=0
+        self,
+        model_config,
+        learn_rate_init=0.01,
+        batch_size=4,
+        reg_lambda=1e-2,
+        anneal=True,
+        num_epochs=50,
+        L2=False,
+        early_stop=0,
     ):
         super().__init__(
             model_config["input_dim"],
@@ -27,7 +34,7 @@ class TwoLayer(AbstractMLP):
             anneal,
             num_epochs,
             L2,
-            early_stop
+            early_stop,
         )
 
         self.hidden_1_dim: int = model_config["hidden_1_dim"]
@@ -35,7 +42,7 @@ class TwoLayer(AbstractMLP):
         self.hiddent_1_fnc: ActivationFunction = model_config["hiddent_1_fnc"]
         self.hiddent_2_fnc: ActivationFunction = model_config["hiddent_2_fnc"]
 
-        self.W1 = np.random.randn(self.input_dim, self.hidden_1_dim)/np.sqrt(self.input_dim)
+        self.W1 = np.random.randn(self.input_dim, self.hidden_1_dim) / np.sqrt(self.input_dim)
         self.b1 = np.zeros((1, self.hidden_1_dim))
 
         self.W2 = np.random.randn(self.hidden_1_dim, self.hidden_2_dim) / np.sqrt(self.hidden_1_dim)

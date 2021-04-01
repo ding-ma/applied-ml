@@ -42,7 +42,7 @@ class Softmax(ActivationFunction):
         xrel += np.log(np.finfo(float).max / x.shape[axis]) * 0.9
 
         exp_xrel = np.exp(xrel)
-        return exp_xrel / exp_xrel.sum(**kw) 
+        return exp_xrel / exp_xrel.sum(**kw)
 
     def gradient(self, x):
         p = self.__call__(x)

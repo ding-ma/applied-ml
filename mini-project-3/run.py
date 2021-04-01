@@ -20,32 +20,8 @@ from itertools import islice
 import numpy as np
 import joblib
 
-# data_preprocess_config = {
-#     "threshold": False,
-#     "normalize": True,
-#     "augment_data": {"rotate": False, "shift": False, "zoom": False, "shear": False, "all": False}
-# }
-
-# gradient_config = {"batch_size": 10, "learn_rate_init": 0.0002, "reg_lambda": 0.1, "num_epochs": 15, "L2": False}
-
-# model_config_0_layer = {
-#     "input_dim": 28*28,
-#     "output_dim": 10,
-#     "output_fnc": Softmax(),
-# }
-# mlp = NoLayer(model_config_0_layer, **gradient_config)
-
-# model_config_1_layer = {
-#     "input_dim": 28 * 28,
-#     "hidden_dim": 128,
-#     "output_dim": 10,
-#     "hiddent_fnc": ReLU(),
-#     "output_fnc": Softmax(),
-# }
-# mlp = OneLayer(model_config_1_layer, **gradient_config)
-
-# np.random.seed(0)
-
+# make the results reproducable
+np.random.seed(0)
 
 model_config = {
     "input_dim": 28 * 28,
@@ -75,9 +51,9 @@ preprocess_param = {
     "augment_data": False,
 }
 
+# OneLayer(model_config, **gradient_config)
+# NoLayer(model_config, **gradient_config)
 mlp = TwoLayer(model_config, **gradient_config)
-
-# mlp.file_name += "_train_size(50k)"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -103,15 +79,6 @@ Model Parameters
 logging.info(experiment_description)
 
 train_array, y_train, test_array, y_test = aquire_data(**preprocess_param)
-
-indices = np.arange(train_array.shape[0])
-np.random.shuffle(indices)
-train_array = train_array[indices]
-y_train = y_train[indices]
-
-
-# train_array = train_array[:50000]
-# y_train = y_train[:50000]
 
 mlp.fit(train_array, y_train, test_array, y_test)
 mlp.save()
