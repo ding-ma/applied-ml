@@ -60,12 +60,12 @@ model_config = {
 }
 
 gradient_config = {
-    "batch_size": 1000,
+    "batch_size": 50,
     "learn_rate_init": 0.002,
     "reg_lambda": 0.1,
     "num_epochs": 20,
     "L2": False,
-    "anneal": True,
+    "anneal": False,
     "early_stop": 0,
 }
 
@@ -77,7 +77,7 @@ preprocess_param = {
 
 mlp = TwoLayer(model_config, **gradient_config)
 
-mlp.file_name += "_train_size(50k)"
+# mlp.file_name += "_train_size(50k)"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -110,8 +110,8 @@ train_array = train_array[indices]
 y_train = y_train[indices]
 
 
-train_array = train_array[:50000]
-y_train = y_train[:50000]
+# train_array = train_array[:50000]
+# y_train = y_train[:50000]
 
 mlp.fit(train_array, y_train, test_array, y_test)
 mlp.save()
