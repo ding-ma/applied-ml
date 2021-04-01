@@ -61,7 +61,7 @@ model_config = {
 
 gradient_config = {
     "batch_size": 50,
-    "learn_rate_init": 0.002,
+    "learn_rate_init": 0.02,
     "reg_lambda": 0.1,
     "num_epochs": 20,
     "L2": False,
