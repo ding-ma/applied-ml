@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "mini-project-4/venv/bin/python",
+    "terminal.integrated.cwd": "mini-project-4/",
+    "python.formatting.provider": "black"
+}

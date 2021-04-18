@@ -1,29 +1,27 @@
-# applied-ml
+# Applied-ML
 COMP 551 - Applied Machine Learning (Winter 2021)
 
 ## Projects
 1. KNN and Decision Tree on cancer data
 1. Naive Bayes and Linear Regression on text data
 1. Multilayer Perceptron on MNIST
-
+1. YOLO: Unified, Real-Time Object Detection Reproducibility Challenge
 
 ## To SSH onto the VM
 1. Create your ssh public and private key.
 1. Upload your public ssh key to GCP
-1. `ssh -i path_to_private_key username@34.122.237.6`. The IP address of the VM is static.
+1. `ssh -i path_to_private_key username@34.73.156.13`. The IP address of the VM is static.
 
+**NOTE**: IP of VM changed since mini-project-3
 
 ## Create virtual environment
-1. `pip3 install virtualenv`, if you do not have it yet
-1. `virtualenv venv`
+Each mini-project has its own virtual environment
+1. `cd` into the mini-project you want to work with
+1. Create your virtualenv: `python -m venv venv`
 1. `source venv/bin/activate`, you should see `venv` in front of your terminal prompt
-1. `pip install -r requirements.txt`
+1. Install project dependencies: `pip install -r requirements.txt`
+1. If you installed new dependencies: `pip freeze > requirements.txt`
 
-
-## Reading and writing files
-All the dataset are located at `/home/dataset`. There is a dataset folder for each project. 
-* If there is a permission denied issue, make sure to run `sudo chmod -R 777 /home/dataset`. 
-* If you create new dataset files, run `sudo chmod -R 777 /home/dataset`.
 
 ## Running a task in background
 1. `python script_name.py &`
