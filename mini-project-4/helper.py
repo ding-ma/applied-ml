@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path("/home/dataset/imagenet_2010")
 TRAIN_SET = BASE_DIR / "train"
 TEST_SET = BASE_DIR / "test"
-VAL_SET = BASE_DIR / "val"
+VAL_SET = BASE_DIR / "val"  # the validation dataset will be used a testset for our experiments
 
 
 class AverageMeter(object):

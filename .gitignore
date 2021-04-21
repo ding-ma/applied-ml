@@ -134,3 +134,6 @@ dmypy.json
 scratch/
 !scratch/.gitkeep
 __pycache__/
+
+
+data/
