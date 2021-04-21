@@ -1,11 +1,10 @@
 from pathlib import Path
 
 BASE_DIR = Path("/home/dataset/imagenet_2010")
+# BASE_DIR = Path("/home/dataset/small_image_net") # only 50 images
 TRAIN_SET = BASE_DIR / "train"
 TEST_SET = BASE_DIR / "test"
 VAL_SET = BASE_DIR / "val"  # the validation dataset will be used a testset for our experiments
-
-
 
 
 class AverageMeter(object):
