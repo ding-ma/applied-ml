@@ -1,18 +1,20 @@
 #%%
-import torchvision.models as models
+import copy
+import os
+import time
+
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-from torch.optim import lr_scheduler
-import numpy as np
 import torchvision
+import torchvision.datasets as datasets
+import torchvision.models as models
+import torchvision.transforms as transforms
+from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
-import matplotlib.pyplot as plt
-import time
-import os
-import copy
+
 from helper import *
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -53,6 +55,7 @@ print(vgg16)
 
 criterion = nn.MSELoss()
 
+
 def fit(model, train_dataloader):
     model.train()
     train_running_loss = 0.0
@@ -70,6 +73,7 @@ def fit(model, train_dataloader):
     train_loss = train_running_loss / len(train_dataloader.dataset)
     train_accuracy = 100.0 * train_running_correct / len(train_dataloader.dataset)
     print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_accuracy:.2f}")
+
 
 def validate(model, val_dataloader):
     model.eval()

@@ -1,4 +1,9 @@
 {
     "terminal.integrated.cwd": "mini-project-4/",
     "python.formatting.provider": "black",
+    "[python]": {
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+        }
+    },
 }
