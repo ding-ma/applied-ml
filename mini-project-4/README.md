@@ -1,28 +1,26 @@
 # ML Reproducibility Challenge
-For this project, we aim to reproduce some of the experiments done by Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi for the[ You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/pdf/1506.02640v5.pdf) paper. 
+We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Recognition__ by Karen Simonyan, and Andrew Zisserman
 
+## Dependencies
+* Google Cloud Deep Learning VM with Pytorch 1.8. You should see `(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$` in your terminal.
+* Install the additional packages with `pip install -r requirements.txt`
 
-## Useful Links
-* https://paperswithcode.com/paper/you-only-look-once-unified-real-time-object
-* https://github.com/thtrieu/darkflow
-* https://pjreddie.com/darknet/yolov1/
-* Implementation with Pytorch from [scratch](https://youtu.be/n9_XyCGr-MI?t=812) and the [code](https://github.com/aladdinpersson/Machine-Learning-Collection/tree/master/ML/Pytorch/object_detection/YOLO)
-* https://www.kaggle.com/dataset/734b7bcb7ef13a045cbdd007a3c19874c2586ed0b02b4afc86126e89d00af8d2/code
-
-
-## Default dependencies
-* TensorFlow 2
-* Pytorch 1.8.1
-* Pandas
-* Numpy
-* Sk-learn
-
+## PreTrained Models
+* See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset
 
 ## Dataset Location
-* All dataset are located in `/home/shared`
-* If you encounter any issue with permssion, run `sudo chmod -R 777 /home/shared`
-* The PASCAL VOC dataset is downloaded at `/home/shared/VOCdevkit`
-
+* Downloaded from: [Kaggle 2019 ImageNet](https://www.kaggle.com/c/imagenet-object-localization-challenge/data)
+* Download from [Imaget](http://image-net.org/challenges/LSVRC/2010/2010-downloads) from 2010: 
+1. Test set (15GB)
+1. Validation set (5GB)
+1. Train set (124GB)
+```
+wget -d --header="X-Auth-Token: your_access_token" url
+```
+* All dataset are located in `/home/dataset`
+* If you encounter any issue with permssion, run `sudo chmod -R 777 /home/dataset`
+* Validation labels are located at: `/home/dataset/imagenet_2010/devkit-1.0/data/ILSVRC2010_validation_ground_truth.txt`
+* The test set labels are NOT available
 
 ## GPU for project
 Make sure when you run `nvidia-smi`, you see the GPU you attached.
@@ -49,3 +47,11 @@ Sun Apr 18 20:11:04 2021
 |  No running processes found                                                 |
 +-----------------------------------------------------------------------------+
 ```
+
+## Todos
+* > You will first reproduce the results reported in the paper by running the code provided by the authors or by implementing on your own, if no code is available
+* > You will try to modify the model and perform ablation studies to understand the model’s robustness and evaluate the importance of the various model components. (In this context, the term “ablation” is used to describe the process of removing different model components to see how it impacts performance.)
+* > You should do a thorough analysis of the model through an extensive set of experiments.
+* > Note that some experiments will be difficult to replicate due to computational resources. It is fine to reproduce only a subset of the original paper’s results or to work on a smaller variant of the data—if necessary.
+* > At a minimum, you should use the authors code to reproduce a non-trivial subset of their results and explore how the model performs after you make minor modifications (e.g., changes to hyperparameters).
+* > An outstanding project would perform a detailed ablation study and/or implement significant/meaningful extensions of the model.
