@@ -16,13 +16,16 @@ if device == "cpu":
 
 print(device)
 
+normalize = transforms.Normalize(mean=[123.68, 116.779, 103.939], std=[58.393, 57.12, 57.375])
+
+
 transform = transforms.Compose(
-    [transforms.Resize((224, 224)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+    [transforms.Resize((224, 224)), transforms.ToTensor(), normalize]
 )
-trainset = torchvision.datasets.CIFAR10(root="./data", train=True, download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
-testset = torchvision.datasets.CIFAR10(root="./data", train=False, download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
+trainset = torchvision.datasets.ImageFolder(root=TRAIN_SET, train=True, download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=256, shuffle=True)
+testset = torchvision.datasets.ImageFolder(root=TEST_SET, train=False, download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=256, shuffle=False)
 vgg16 = models.vgg16(pretrained=True)
 vgg16.to(device)
 
@@ -35,15 +38,18 @@ for param in vgg16.features.parameters():
     param.requires_grad = False
 
 # optimizer
-optimizer = optim.SGD(vgg16.classifier.parameters(), lr=0.001, momentum=0.9)
+optimizer = optim.SGD(vgg16.classifier.parameters(), lr=0.01, momentum=0.9)
 # loss function
-criterion = nn.CrossEntropyLoss()
+criterion = nn.MSELoss()
+
+
 
 # validation function
 def validate(model, test_dataloader):
     model.eval()
     val_running_loss = 0.0
     val_running_correct = 0
+    
     for int, data in enumerate(test_dataloader):
         data, target = data[0].to(device), data[1].to(device)
         output = model(data)
