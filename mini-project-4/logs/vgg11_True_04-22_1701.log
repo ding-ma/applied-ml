@@ -1,4 +1,0 @@
-2021-04-22 17:01:10 INFO     All arguments used for this run
-    Namespace(arch='vgg11', batch_size=256, data='/home/dataset/ILSVRC/Data/CLS-LOC', dist_backend='nccl', dist_url='tcp://224.66.41.62:23456', epochs=90, evaluate=True, gpu=None, img=256, keep_logs=True, lr=0.1, momentum=0.9, multiprocessing_distributed=False, normalize=True, pretrained=True, print_freq=10, rank=-1, resume='', seed=None, start_epoch=0, weight_decay=0.0001, workers=4, world_size=-1)
-    
-2021-04-22 17:01:12 INFO     => using pre-trained model 'vgg11'

@@ -8,16 +8,18 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 * If there are additional packages, install with `pip install -r requirements.txt`
 
 ## PreTrained Models
-* See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset
+* See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset. They are trained by [224x224 images](https://discuss.pytorch.org/t/imagenet-pretrained-models-image-dimensions/94649)
 
 
 ## Running the model
 We have modified the [Pytorch implementation](https://github.com/pytorch/examples/tree/master/imagenet) to be able to tweak hyperparamters and log the output to a file.
+
 Added params:
 * `--img`: size of the image (default to 256). A size of 384 present in the paper needs a reduction of the batch size to 128
 * `--normalize`: normalization of the RGB values (default to true)
 * `--keep-logs`: save logs to a file when training or testing
-Example: `python main.py -a vgg11 --pretrained --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
+
+Example: `python main.py --arch vgg11 --pretrained --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
 
 ## Dataset Location
 * Download from [Imaget 2012](http://image-net.org/challenges/LSVRC/2012/2012-downloads): 

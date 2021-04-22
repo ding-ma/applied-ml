@@ -87,17 +87,19 @@ parser.add_argument(
 )
 parser.add_argument("--img", default=256, type=int, help="size of the image to train and test")
 parser.add_argument("--normalize", default=True, type=bool, help="Normalize the image before training and testing")
-parser.add_argument("--keep-logs", dest="keep_logs", action="store_true", help="Keep the log files when testing")
+parser.add_argument(
+    "--keep-logs", dest="keep_logs", action="store_true", help="Keep the log files when training and testing"
+)
 
 
-run_date = datetime.now().strftime("%m-%d_%H%M")
+run_date = datetime.now().strftime("%m-%d-%H%M")
 
 best_acc1 = 0
 
 
 def main():
     args = parser.parse_args()
-    file_name = f"{args.arch}_{args.pretrained}_{run_date}"
+    file_name = f"{args.arch}_img-{args.img}_{run_date}"
     handlers = [logging.StreamHandler(sys.stdout)]
 
     if args.keep_logs:
@@ -286,10 +288,12 @@ def main_worker(gpu, ngpus_per_node, args):
         pin_memory=True,
     )
 
+    # Evaluation model only
     if args.evaluate:
         validate(val_loader, model, criterion, args)
         return
 
+    # Training phase
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             train_sampler.set_epoch(epoch)
