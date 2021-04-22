@@ -1,6 +1,6 @@
 from pathlib import Path
 
-BASE_DIR = Path("/home/dataset/imagenet_2010")
+BASE_DIR = Path("/home/dataset/ILSVRC/Data/CLS-LOC")
 # BASE_DIR = Path("/home/dataset/small_image_net") # only 50 images
 TRAIN_SET = BASE_DIR / "train"
 TEST_SET = BASE_DIR / "test"

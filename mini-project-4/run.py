@@ -17,11 +17,12 @@ from PIL import Image
 from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
 
+from Dataset import DataWrapper
 from helper import *
 
 model = models.vgg19(pretrained=True)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-criterion = nn.MSELoss()
+criterion = nn.CrossEntropyLoss()
 
 
 # https://arxiv.org/pdf/1812.01187.pdf
@@ -38,43 +39,39 @@ preprocess = transforms.Compose(
 # train_dataset = datasets.ImageFolder(TRAIN_SET, preprocess)
 # train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True)
 
-val_dataset = datasets.ImageFolder(VAL_SET, preprocess)
+# val_dataset = datasets.ImageFolder(VAL_SET, preprocess)
+val_dataset = DataWrapper(VAL_SET, "/home/dataset/folder_to_class.json", preprocess)
 input_batch = torch.utils.data.DataLoader(val_dataset, shuffle=False)
 print("data loaded")
 
 # move the input and model to GPU for speed if available
-if torch.cuda.is_available():
-    input_batch = input_batch.to("cuda")
-    model.to("cuda")
+# if torch.cuda.is_available():
+#     input_batch = input_batch.to("cuda")
+#     model.to("cuda")
 
 
 def validate(model, val_dataloader):
     model.eval()
     val_running_loss = 0.0
     val_running_correct = 0
-    # lambd = 5e^-4
     print("starting validation")
     for i, data in enumerate(val_dataloader):
-        data, target = data[0].to(device), data[1].to(device)
-        print(i, val_dataset.imgs[i])
+        data, target = data[0], data[1][0]
+        # print(i, val_dataset.imgs[i])
 
         output = model(data)
         probabilities = torch.nn.functional.softmax(output[0], dim=0)
-        with open("imagenet_classes.txt", "r") as f:
-            categories = [s.strip() for s in f.readlines()]
-        top5_prob, top5_catid = torch.topk(probabilities, 5)
-        for i in range(top5_prob.size(0)):
-            print(categories[top5_catid[i]], top5_prob[i].item())
-        # plt.imshow(data.permute(1, 2, 0))
-        print(data.shape)
+        # with open("imagenet_classes.txt", "r") as f:
+        #     categories = [s.strip() for s in f.readlines()]
+        # top5_prob, top5_catid = torch.topk(probabilities, 5)
+        # for j in range(top5_prob.size(0)):
+        #     print(categories[top5_catid[j]], top5_prob[j].item())
 
-        # loss = criterion(output, target) * lambd
         loss = criterion(output, target)
-        print(loss)
+        # print(loss)
         val_running_loss += loss.item()
         _, preds = torch.max(output.data, 1)
         val_running_correct += (preds == target).sum().item()
-        print("-------------------")
 
     val_loss = val_running_loss / len(val_dataloader.dataset)
     val_accuracy = 100.0 * val_running_correct / len(val_dataloader.dataset)
