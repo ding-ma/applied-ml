@@ -1,6 +1,8 @@
 # ML Reproducibility Challenge
 We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Recognition__ by Karen Simonyan, and Andrew Zisserman. The paper can be found [here](https://arxiv.org/abs/1409.1556)
 
+* Report [link](https://www.overleaf.com/project/607ce84766796508c3be39e9)
+
 ## Dependencies
 * Google Cloud Deep Learning VM with Pytorch 1.8. You should see `(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$` in your terminal.
 * Install the additional packages with `pip install -r requirements.txt`
@@ -10,10 +12,9 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 * Run with [Pytorch implementation](https://github.com/pytorch/examples/tree/master/imagenet). Example: `python pytorch_imagenet.py -a vgg11 --pretrained --gpu 0 --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
 
 ## Dataset Location
-* Downloaded from: [Kaggle 2019 ImageNet](https://www.kaggle.com/c/imagenet-object-localization-challenge/data)
 * Download from [Imaget 2012](http://image-net.org/challenges/LSVRC/2012/2012-downloads): 
 1. Test set (15GB): 100,000 images. Labels are NOT available
-1. Validation set (5GB): 50,000 images. Labels are located at: `/home/dataset/imagenet_2010/devkit-1.0/data/ILSVRC2010_validation_ground_truth.txt`
+1. Validation set (5GB): 50,000 images. Labels are located at: `/home/dataset/ILSVRC2012_devkit_t12/data/ILSVRC2012_validation_ground_truth.txt`
 1. Train set (124GB): 1.2M images
 ```
 wget -d --header="X-Auth-Token: your_access_token" url
