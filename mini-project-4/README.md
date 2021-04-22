@@ -5,17 +5,25 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 
 ## Dependencies
 * Google Cloud Deep Learning VM with Pytorch 1.8. You should see `(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$` in your terminal.
-* Install the additional packages with `pip install -r requirements.txt`
+* If there are additional packages, install with `pip install -r requirements.txt`
 
 ## PreTrained Models
 * See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset
-* Run with [Pytorch implementation](https://github.com/pytorch/examples/tree/master/imagenet). Example: `python pytorch_imagenet.py -a vgg11 --pretrained --gpu 0 --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
+
+
+## Running the model
+We have modified the [Pytorch implementation](https://github.com/pytorch/examples/tree/master/imagenet) to be able to tweak hyperparamters and log the output to a file.
+Added params:
+* `--img`: size of the image (default to 256). A size of 384 present in the paper needs a reduction of the batch size to 128
+* `--normalize`: normalization of the RGB values (default to true)
+* `--keep-logs`: save logs to a file when training or testing
+Example: `python main.py -a vgg11 --pretrained --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
 
 ## Dataset Location
 * Download from [Imaget 2012](http://image-net.org/challenges/LSVRC/2012/2012-downloads): 
 1. Test set (15GB): 100,000 images. Labels are NOT available
 1. Validation set (5GB): 50,000 images. Labels are located at: `/home/dataset/ILSVRC2012_devkit_t12/data/ILSVRC2012_validation_ground_truth.txt`
-1. Train set (124GB): 1.2M images
+1. Train set (124GB): 1.2M images. The file name contains the label.
 ```
 wget -d --header="X-Auth-Token: your_access_token" url
 ```
@@ -47,6 +55,9 @@ Sun Apr 18 20:11:04 2021
 |  No running processes found                                                 |
 +-----------------------------------------------------------------------------+
 ```
+
+To continously watch: `watch -n0.1 nvidia-smi`
+
 
 ## Todos
 * > You will first reproduce the results reported in the paper by running the code provided by the authors or by implementing on your own, if no code is available

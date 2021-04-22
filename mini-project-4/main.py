@@ -1,9 +1,12 @@
 import argparse
+import logging
 import os
 import random
 import shutil
+import sys
 import time
 import warnings
+from datetime import datetime
 
 import torch
 import torch.backends.cudnn as cudnn
@@ -72,7 +75,7 @@ parser.add_argument(
     "--dist-url", default="tcp://224.66.41.62:23456", type=str, help="url used to set up distributed training"
 )
 parser.add_argument("--dist-backend", default="nccl", type=str, help="distributed backend")
-parser.add_argument("--seed", default=None, type=int, help="seed for initializing training. ")
+parser.add_argument("--seed", default=None, type=int, help="seed for initializing training.")
 parser.add_argument("--gpu", default=None, type=int, help="GPU id to use.")
 parser.add_argument(
     "--multiprocessing-distributed",
@@ -82,18 +85,42 @@ parser.add_argument(
     "fastest way to use PyTorch for either single node or "
     "multi node data parallel training",
 )
+parser.add_argument("--img", default=256, type=int, help="size of the image to train and test")
+parser.add_argument("--normalize", default=True, type=bool, help="Normalize the image before training and testing")
+parser.add_argument("--keep-logs", dest="keep_logs", action="store_true", help="Keep the log files when testing")
+
+
+run_date = datetime.now().strftime("%m-%d_%H%M")
 
 best_acc1 = 0
 
 
 def main():
     args = parser.parse_args()
+    file_name = f"{args.arch}_{args.pretrained}_{run_date}"
+    handlers = [logging.StreamHandler(sys.stdout)]
+
+    if args.keep_logs:
+        handlers.append(logging.FileHandler(filename=f"logs/{file_name}.log"))
+
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)-8s %(message)s",
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=handlers,
+    )
+
+    logging.info(
+        f"""All arguments used for this run
+    {args}
+    """
+    )
 
     if args.seed is not None:
         random.seed(args.seed)
         torch.manual_seed(args.seed)
         cudnn.deterministic = True
-        warnings.warn(
+        logging.warning(
             "You have chosen to seed training. "
             "This will turn on the CUDNN deterministic setting, "
             "which can slow down your training considerably! "
@@ -102,7 +129,7 @@ def main():
         )
 
     if args.gpu is not None:
-        warnings.warn("You have chosen a specific GPU. This will completely " "disable data parallelism.")
+        logging.warning("You have chosen a specific GPU. This will completely " "disable data parallelism.")
 
     if args.dist_url == "env://" and args.world_size == -1:
         args.world_size = int(os.environ["WORLD_SIZE"])
@@ -127,7 +154,7 @@ def main_worker(gpu, ngpus_per_node, args):
     args.gpu = gpu
 
     if args.gpu is not None:
-        print("Use GPU: {} for training".format(args.gpu))
+        logging.info("Use GPU: {} for training".format(args.gpu))
 
     if args.distributed:
         if args.dist_url == "env://" and args.rank == -1:
@@ -141,14 +168,14 @@ def main_worker(gpu, ngpus_per_node, args):
         )
     # create model
     if args.pretrained:
-        print("=> using pre-trained model '{}'".format(args.arch))
+        logging.info("=> using pre-trained model '{}'".format(args.arch))
         model = models.__dict__[args.arch](pretrained=True)
     else:
-        print("=> creating model '{}'".format(args.arch))
+        logging.info("=> creating model '{}'".format(args.arch))
         model = models.__dict__[args.arch]()
 
     if not torch.cuda.is_available():
-        print("using CPU, this will be slow")
+        logging.info("using CPU, this will be slow")
     elif args.distributed:
         # For multiprocessing distributed, DistributedDataParallel constructor
         # should always set the single device scope, otherwise,
@@ -186,7 +213,7 @@ def main_worker(gpu, ngpus_per_node, args):
     # optionally resume from a checkpoint
     if args.resume:
         if os.path.isfile(args.resume):
-            print("=> loading checkpoint '{}'".format(args.resume))
+            logging.info("=> loading checkpoint '{}'".format(args.resume))
             if args.gpu is None:
                 checkpoint = torch.load(args.resume)
             else:
@@ -200,22 +227,26 @@ def main_worker(gpu, ngpus_per_node, args):
                 best_acc1 = best_acc1.to(args.gpu)
             model.load_state_dict(checkpoint["state_dict"])
             optimizer.load_state_dict(checkpoint["optimizer"])
-            print("=> loaded checkpoint '{}' (epoch {})".format(args.resume, checkpoint["epoch"]))
+            logging.info("=> loaded checkpoint '{}' (epoch {})".format(args.resume, checkpoint["epoch"]))
         else:
-            print("=> no checkpoint found at '{}'".format(args.resume))
+            logging.info("=> no checkpoint found at '{}'".format(args.resume))
 
     cudnn.benchmark = True
 
     # Data loading code
     traindir = os.path.join(args.data, "train")
     valdir = os.path.join(args.data, "val")
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+    if args.normalize:
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    else:
+        normalize = transforms.Normalize(mean=[0, 0, 0], std=[1, 1, 1])
 
     train_dataset = datasets.ImageFolder(
         traindir,
         transforms.Compose(
             [
-                transforms.RandomResizedCrop(224),
+                transforms.RandomResizedCrop(args.img),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 normalize,
@@ -242,8 +273,8 @@ def main_worker(gpu, ngpus_per_node, args):
             valdir,
             transforms.Compose(
                 [
-                    transforms.Resize(256),
-                    transforms.CenterCrop(224),
+                    transforms.Resize(args.img),
+                    transforms.CenterCrop(args.img),
                     transforms.ToTensor(),
                     normalize,
                 ]
@@ -371,7 +402,7 @@ def validate(val_loader, model, criterion, args):
                 progress.display(i)
 
         # TODO: this should also be done with the ProgressMeter
-        print(" * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}".format(top1=top1, top5=top5))
+        logging.info(" * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}".format(top1=top1, top5=top5))
 
     return top1.avg
 
@@ -416,7 +447,7 @@ class ProgressMeter(object):
     def display(self, batch):
         entries = [self.prefix + self.batch_fmtstr.format(batch)]
         entries += [str(meter) for meter in self.meters]
-        print("\t".join(entries))
+        logging.info("\t".join(entries))
 
     def _get_batch_fmtstr(self, num_batches):
         num_digits = len(str(num_batches // 1))
