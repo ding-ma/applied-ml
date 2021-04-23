@@ -7,6 +7,7 @@ import sys
 import time
 import warnings
 from datetime import datetime
+from pathlib import Path
 
 import torch
 import torch.backends.cudnn as cudnn
@@ -22,13 +23,14 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 from torch.utils import data
 
+from customVGG import create_custom_model
 from jitter import JitterDataset
 
 model_names = sorted(
     name
     for name in models.__dict__
     if name.islower() and not name.startswith("__") and callable(models.__dict__[name])
-)
+) + ["custom"]
 
 parser = argparse.ArgumentParser(description="PyTorch ImageNet Training")
 parser.add_argument("data", metavar="DIR", help="path to dataset")
@@ -48,7 +50,7 @@ parser.add_argument("--start-epoch", default=0, type=int, metavar="N", help="man
 parser.add_argument(
     "-b",
     "--batch-size",
-    default=256,
+    default=128,
     type=int,
     metavar="N",
     help="mini-batch size (default: 256), this is the total "
@@ -95,7 +97,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--random-resize", dest="resize_list", nargs="+", type=int, default=[], help="Randomly resize test images"
+    "--jitter-val", dest="jitter_val", nargs="+", type=int, default=[], help="Randomly resize test images"
 )
 
 
@@ -109,11 +111,12 @@ def main():
     handlers = [logging.StreamHandler(sys.stdout)]
 
     if args.keep_logs:
-        if args.resize_list:
-            file_name = f"{args.arch}_img-{".".join(args.resize_list)}_{run_date}"
+        Path("logs").mkdir(exist_ok=True)
+        if args.jitter_val:
+            file_name = f"{args.arch}_img-{'-'.join(map(str, args.jitter_val))}_{run_date}"
         else:
             file_name = f"{args.arch}_img-{args.img}_{run_date}"
-        
+
         handlers.append(logging.FileHandler(filename=f"logs/{file_name}.log"))
 
     logging.basicConfig(
@@ -180,7 +183,9 @@ def main_worker(gpu, ngpus_per_node, args):
             backend=args.dist_backend, init_method=args.dist_url, world_size=args.world_size, rank=args.rank
         )
     # create model
-    if args.pretrained:
+    if args.arch == "custom":
+        model = create_custom_model()
+    elif args.pretrained:
         logging.info("=> using pre-trained model '{}'".format(args.arch))
         model = models.__dict__[args.arch](pretrained=True)
     else:
@@ -281,9 +286,9 @@ def main_worker(gpu, ngpus_per_node, args):
         sampler=train_sampler,
     )
 
-    if args.resize_list:
+    if args.jitter_val:
         val_loader = torch.utils.data.DataLoader(
-            JitterDataset(datasets.ImageFolder(valdir), args.resize_list),
+            JitterDataset(datasets.ImageFolder(valdir), args.jitter_val),
             batch_size=args.batch_size,
             shuffle=True,
             num_workers=args.workers,

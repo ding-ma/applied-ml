@@ -4,7 +4,10 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 * Report [link](https://www.overleaf.com/5664642148xbhzcswsnzwy)
 
 ## Dependencies
-* Google Cloud Deep Learning VM with Pytorch 1.8. You should see `(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$` in your terminal.
+* Google Cloud Deep Learning VM with Pytorch 1.8. You should see in your terminal 
+```bash
+(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$
+``` 
 * If there are additional packages, install with `pip install -r requirements.txt`
 
 ## PreTrained Models
@@ -14,13 +17,16 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 ## Running the model
 We have modified the [Pytorch implementation](https://github.com/pytorch/examples/tree/master/imagenet) to be able to tweak hyperparamters and log the output to a file.
 
-Added params:
-* `--img`: size of the image (default to 256). A size of 384 present in the paper needs a reduction of the batch size to 128
-* `--normalize`: normalization of the RGB values (default to true)
-* `--keep-logs`: save logs to a file when training or testing
-* `--random-resize`: randomly resize the images. Takes in **3** numbers only. E.g. `--random-resize 224 256 288`
+Modified:
+* `--batch-size`: defaults to 128 instead of 256 due to GPU memory limitations. Only images sized at 256x256 can use a batch size of 256, otherwise the program will crash.
 
-Example: `python main.py --arch vgg11 --pretrained --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
+Added params:
+* `--img`: size of the image (default to 256). 
+* `--normalize`: normalization of the RGB values (default to true)
+* `--keep-logs`: save logs to a file when training or testing. The output are saved to `./logs`
+* `--jitter-val`: randomly resize validation images. The smaller images will be padded with 0 to match the largest one. E.g. `--jitter-val 224 256 288`
+
+Example: `python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch vgg11 --pretrained --evaluate`
 
 ## Dataset Location
 * Download from [Imaget 2012](http://image-net.org/challenges/LSVRC/2012/2012-downloads): 
@@ -30,7 +36,7 @@ Example: `python main.py --arch vgg11 --pretrained --evaluate /home/dataset/ILSV
 ```
 wget -d --header="X-Auth-Token: your_access_token" url
 ```
-* All dataset are located in `/home/dataset`
+* The dataset is located in `/home/dataset/ILSVRC/`
 * If you encounter any issue with permssion, run `sudo chmod -R 777 /home/dataset`
 
 ## GPU for project
