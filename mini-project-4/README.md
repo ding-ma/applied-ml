@@ -1,7 +1,7 @@
 # ML Reproducibility Challenge
 We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Recognition__ by Karen Simonyan, and Andrew Zisserman. The paper can be found [here](https://arxiv.org/abs/1409.1556)
 
-* Report [link](https://www.overleaf.com/project/607ce84766796508c3be39e9)
+* Report [link](https://www.overleaf.com/5664642148xbhzcswsnzwy)
 
 ## Dependencies
 * Google Cloud Deep Learning VM with Pytorch 1.8. You should see `(base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$` in your terminal.
