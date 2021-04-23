@@ -18,6 +18,7 @@ Added params:
 * `--img`: size of the image (default to 256). A size of 384 present in the paper needs a reduction of the batch size to 128
 * `--normalize`: normalization of the RGB values (default to true)
 * `--keep-logs`: save logs to a file when training or testing
+* `--random-resize`: randomly resize the images. Takes in **3** numbers only. E.g. `--random-resize 224 256 288`
 
 Example: `python main.py --arch vgg11 --pretrained --evaluate /home/dataset/ILSVRC/Data/CLS-LOC`
 

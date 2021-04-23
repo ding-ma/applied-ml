@@ -20,6 +20,9 @@ import torch.utils.data.distributed
 import torchvision.datasets as datasets
 import torchvision.models as models
 import torchvision.transforms as transforms
+from torch.utils import data
+
+from jitter import JitterDataset
 
 model_names = sorted(
     name
@@ -91,6 +94,10 @@ parser.add_argument(
     "--keep-logs", dest="keep_logs", action="store_true", help="Keep the log files when training and testing"
 )
 
+parser.add_argument(
+    "--random-resize", dest="resize_list", nargs="+", type=int, default=[], help="Randomly resize test images"
+)
+
 
 run_date = datetime.now().strftime("%m-%d-%H%M")
 
@@ -99,10 +106,14 @@ best_acc1 = 0
 
 def main():
     args = parser.parse_args()
-    file_name = f"{args.arch}_img-{args.img}_{run_date}"
     handlers = [logging.StreamHandler(sys.stdout)]
 
     if args.keep_logs:
+        if args.resize_list:
+            file_name = f"{args.arch}_img-{".".join(args.resize_list)}_{run_date}"
+        else:
+            file_name = f"{args.arch}_img-{args.img}_{run_date}"
+        
         handlers.append(logging.FileHandler(filename=f"logs/{file_name}.log"))
 
     logging.basicConfig(
@@ -270,23 +281,32 @@ def main_worker(gpu, ngpus_per_node, args):
         sampler=train_sampler,
     )
 
-    val_loader = torch.utils.data.DataLoader(
-        datasets.ImageFolder(
-            valdir,
-            transforms.Compose(
-                [
-                    transforms.Resize(args.img),
-                    transforms.CenterCrop(args.img),
-                    transforms.ToTensor(),
-                    normalize,
-                ]
+    if args.resize_list:
+        val_loader = torch.utils.data.DataLoader(
+            JitterDataset(datasets.ImageFolder(valdir), args.resize_list),
+            batch_size=args.batch_size,
+            shuffle=True,
+            num_workers=args.workers,
+            pin_memory=True,
+        )
+    else:
+        val_loader = torch.utils.data.DataLoader(
+            datasets.ImageFolder(
+                valdir,
+                transforms.Compose(
+                    [
+                        transforms.Resize(args.img),
+                        transforms.CenterCrop(args.img),
+                        transforms.ToTensor(),
+                        normalize,
+                    ]
+                ),
             ),
-        ),
-        batch_size=args.batch_size,
-        shuffle=False,
-        num_workers=args.workers,
-        pin_memory=True,
-    )
+            batch_size=args.batch_size,
+            shuffle=True,
+            num_workers=args.workers,
+            pin_memory=True,
+        )
 
     # Evaluation model only
     if args.evaluate:
