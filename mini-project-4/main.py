@@ -91,7 +91,16 @@ parser.add_argument(
     "multi node data parallel training",
 )
 parser.add_argument("--img", default=256, type=int, help="size of the image to train and test")
-parser.add_argument("--normalize", default=True, type=bool, help="Normalize the image before training and testing")
+parser.add_argument(
+    "--normalize", default=True, action="store_true", help="Normalize the image before training and testing"
+)
+parser.add_argument(
+    "--no-normalize",
+    dest="normalize",
+    action="store_false",
+    help="Remove normalization of the image before training and testing",
+)
+
 parser.add_argument(
     "--keep-logs", dest="keep_logs", action="store_true", help="Keep the log files when training and testing"
 )

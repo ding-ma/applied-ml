@@ -22,7 +22,7 @@ Modified:
 
 Added params:
 * `--img`: size of the image (default to 256). 
-* `--normalize`: normalization of the RGB values (default to true)
+* `--no-normalize`: Remove image color normalization.
 * `--keep-logs`: save logs to a file when training or testing. The output are saved to `./logs`
 * `--jitter-val`: randomly resize validation images. The smaller images will be padded with 0 to match the largest one. E.g. `--jitter-val 224 256 288`
 
