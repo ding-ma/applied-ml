@@ -4,22 +4,13 @@ import torch.nn as nn
 import torchvision.models as models
 
 
+# python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch custom --keep-logs --batch-size 175
 def create_custom_model():
-    model = models.vgg11(pretrained=True)
+    model = models.vgg11(pretrained=False)
 
-    model.features[1] = nn.LeakyReLU(inplace=True)
-    model.features[4] = nn.LeakyReLU(inplace=True)
-    model.features[7] = nn.LeakyReLU(inplace=True)
-    model.features[9] = nn.LeakyReLU(inplace=True)
-    model.features[14] = nn.LeakyReLU(inplace=True)
-    model.features[17] = nn.LeakyReLU(inplace=True)
-    model.features[19] = nn.LeakyReLU(inplace=True)
+    # remove the last maxpool and conv layers
+    model.features = nn.Sequential(*[model.features[i] for i in range(16)])
 
-    model.classifier[1] = nn.LeakyReLU(inplace=True)
-    model.classifier[4] = nn.LeakyReLU(inplace=True)
-    # Reudcing the number of FC Layers
-    # classifiers = [model.classifier[0], model.classifier[1], model.classifier[2], model.classifier[6]]
-    # model.classifier = nn.Sequential(*classifiers)
     logging.info(
         f"""Model Config
     {model}
