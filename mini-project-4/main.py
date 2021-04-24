@@ -184,6 +184,7 @@ def main_worker(gpu, ngpus_per_node, args):
         )
     # create model
     if args.arch == "custom":
+        logging.info("=> using custom model")
         model = create_custom_model()
     elif args.pretrained:
         logging.info("=> using pre-trained model '{}'".format(args.arch))
