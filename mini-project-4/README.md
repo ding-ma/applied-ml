@@ -4,14 +4,14 @@ We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Re
 * Report [link](https://www.overleaf.com/5664642148xbhzcswsnzwy)
 
 ## Dependencies
-* Google Cloud Deep Learning VM with Pytorch 1.8. You should see in your terminal 
+* Google Cloud Deep Learning VM with Pytorch 1.8. You should see in your terminal the `(base)` conda environment
 ```bash
 (base) ding@deeplearning-4-vm:~/applied-ml/mini-project-4/$
 ``` 
 * If there are additional packages, install with `pip install -r requirements.txt`
 
 ## PreTrained Models
-* See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset. They are trained by [224x224 images](https://discuss.pytorch.org/t/imagenet-pretrained-models-image-dimensions/94649)
+* See [PyTorch](https://pytorch.org/vision/stable/models.html). The models are trained on the ImageNet Dataset. They are trained on [224x224 images](https://discuss.pytorch.org/t/imagenet-pretrained-models-image-dimensions/94649)
 
 
 ## Running the model
