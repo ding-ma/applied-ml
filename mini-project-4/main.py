@@ -109,6 +109,10 @@ parser.add_argument(
     "--jitter-val", dest="jitter_val", nargs="+", type=int, default=[], help="Randomly resize test images"
 )
 
+parser.add_argument(
+    "--jitter-train", dest="jitter_train", nargs="+", type=int, default=[], help="Randomly resize train images"
+)
+
 
 run_date = datetime.now().strftime("%m-%d-%H%M")
 
@@ -287,14 +291,24 @@ def main_worker(gpu, ngpus_per_node, args):
     else:
         train_sampler = None
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=args.batch_size,
-        shuffle=(train_sampler is None),
-        num_workers=args.workers,
-        pin_memory=True,
-        sampler=train_sampler,
-    )
+    if args.jitter_train:
+        train_loader = torch.utils.data.DataLoader(
+            JitterDataset(datasets.ImageFolder(traindir), args.jitter_train),
+            batch_size=args.batch_size,
+            shuffle=(train_sampler is None),
+            num_workers=args.workers,
+            pin_memory=True,
+            sampler=train_sampler,
+        )
+    else:
+        train_loader = torch.utils.data.DataLoader(
+            train_dataset,
+            batch_size=args.batch_size,
+            shuffle=(train_sampler is None),
+            num_workers=args.workers,
+            pin_memory=True,
+            sampler=train_sampler,
+        )
 
     if args.jitter_val:
         val_loader = torch.utils.data.DataLoader(

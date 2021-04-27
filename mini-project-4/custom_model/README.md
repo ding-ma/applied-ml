@@ -79,3 +79,23 @@ We changed the kernel size to 5 while using VGG11. The model is the following:
   )
 )
 ```
+Outcome: Not very successful and very time consuming.
+
+
+## Experiment 3
+Trained on VGG 11 with image size of 128x128. Started with the pretrained model and finue-tuned for 10 epochs.
+Results
+```
+2021-04-26 16:36:54 INFO      * Acc@1 59.418 Acc@5 82.264
+2021-04-26 17:43:53 INFO      * Acc@1 60.112 Acc@5 82.742
+2021-04-26 18:49:15 INFO      * Acc@1 60.582 Acc@5 83.220
+2021-04-26 19:52:42 INFO      * Acc@1 60.924 Acc@5 83.476
+2021-04-26 20:56:45 INFO      * Acc@1 61.160 Acc@5 83.564
+2021-04-26 22:00:25 INFO      * Acc@1 61.502 Acc@5 83.822
+2021-04-26 23:03:43 INFO      * Acc@1 61.734 Acc@5 83.898
+2021-04-27 00:07:58 INFO      * Acc@1 61.728 Acc@5 84.052
+2021-04-27 01:11:57 INFO      * Acc@1 62.024 Acc@5 84.182
+2021-04-27 02:16:24 INFO      * Acc@1 62.090 Acc@5 84.206
+```
+
+
