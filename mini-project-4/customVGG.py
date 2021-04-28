@@ -8,10 +8,13 @@ import torchvision.models as models
 
 # python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch custom --keep-logs --batch-size 150 --print-freq 100
 def create_custom_model():
-    model = vgg11()
+    model = models.vgg11(pretrained=True)
+
+    # remove the last maxpool and conv layers
+    model.features = nn.Sequential(*[model.features[i] for i in range(16)])
 
     logging.info(
-        f"""Model Config: ** Changed to kernel size of 5 **
+        f"""Model Config
     {model}
     """
     )
@@ -21,6 +24,7 @@ def create_custom_model():
 
 ################################
 # Taken from PyTorch source code.
+# The code was modified to output a Kernel of 5x5 instead of 3x3 in the paper
 
 from typing import Any, Dict, List, Union, cast
 

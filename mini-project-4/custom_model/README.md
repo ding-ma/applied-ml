@@ -38,7 +38,27 @@ We decided to remove the last conv3-512 block from VGG 11 which gives us a "_VGG
   )
 )
 ```
-The training of this model crashed during its 13th epoch.
+~~The training of this model crashed during its 13th epoch.~~ We reattempted training of this model with a `learning rate: 0.001` and we got much better results. 
+
+```
+2021-04-27 04:16:14 INFO      * Acc@1 47.298 Acc@5 73.276
+2021-04-27 05:52:55 INFO      * Acc@1 52.112 Acc@5 77.188
+2021-04-27 07:29:39 INFO      * Acc@1 54.700 Acc@5 78.984
+2021-04-27 09:06:23 INFO      * Acc@1 55.928 Acc@5 79.934
+2021-04-27 10:43:08 INFO      * Acc@1 56.872 Acc@5 80.758
+2021-04-27 12:19:51 INFO      * Acc@1 58.350 Acc@5 81.626
+2021-04-27 13:56:39 INFO      * Acc@1 58.310 Acc@5 81.558
+2021-04-27 15:33:24 INFO      * Acc@1 59.566 Acc@5 82.352
+2021-04-27 17:10:12 INFO      * Acc@1 59.630 Acc@5 82.368
+2021-04-27 18:46:59 INFO      * Acc@1 59.890 Acc@5 82.770
+2021-04-27 20:24:07 INFO      * Acc@1 60.210 Acc@5 83.006
+2021-04-27 22:00:55 INFO      * Acc@1 60.312 Acc@5 83.004
+2021-04-27 23:37:43 INFO      * Acc@1 61.000 Acc@5 83.428
+2021-04-28 01:14:33 INFO      * Acc@1 61.176 Acc@5 83.716
+```
+
+
+
 
 ## Experiment 2
 We changed the kernel size to 5 while using VGG11. The model is the following:

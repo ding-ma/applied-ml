@@ -19,12 +19,14 @@ We have modified the [Pytorch implementation](https://github.com/pytorch/example
 
 Modified:
 * `--batch-size`: defaults to 128 instead of 256 due to GPU memory limitations. Only images sized at 256x256 can use a batch size of 256, otherwise the program will crash.
+* `--arch`: Takes in _custom_ as an argument. It allows the user to modify the `customVGG.py`class. 
 
 Added params:
 * `--img`: size of the image (default to 256). 
 * `--no-normalize`: Remove image color normalization.
 * `--keep-logs`: save logs to a file when training or testing. The output are saved to `./logs`
 * `--jitter-val`: randomly resize validation images. The smaller images will be padded with 0 to match the largest one. E.g. `--jitter-val 224 256 288`
+* `--jitter-train`: randomly resize training images. The smaller images will be padded with 0 to match the largest one.
 
 Example: `python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch vgg11 --pretrained --evaluate`
 
@@ -36,6 +38,9 @@ Example: `python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch vgg11 --pretra
 ```
 wget -d --header="X-Auth-Token: your_access_token" url
 ```
+
+**Warning** This will take a few hours. 
+
 * The dataset is located in `/home/dataset/ILSVRC/`
 * If you encounter any issue with permssion, run `sudo chmod -R 777 /home/dataset`
 
