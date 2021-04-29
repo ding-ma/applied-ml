@@ -99,7 +99,29 @@ We changed the kernel size to 5 while using VGG11. The model is the following:
   )
 )
 ```
-Outcome: Not very successful and very time consuming.
+~~Outcome: Not very successful and very time consuming.~~
+We reattempted training of this model with a `learning rate: 0.001` and we got much better results.
+```
+2021-04-28 03:46:29 INFO      * Acc@1 0.100 Acc@5 0.516
+2021-04-28 05:51:05 INFO      * Acc@1 0.100 Acc@5 0.486
+2021-04-28 07:55:41 INFO      * Acc@1 0.154 Acc@5 0.528
+2021-04-28 10:00:24 INFO      * Acc@1 0.162 Acc@5 0.824
+2021-04-28 12:05:06 INFO      * Acc@1 0.380 Acc@5 1.692
+2021-04-28 14:09:48 INFO      * Acc@1 1.040 Acc@5 4.706
+2021-04-28 16:14:31 INFO      * Acc@1 2.456 Acc@5 9.388
+2021-04-28 18:19:13 INFO      * Acc@1 5.000 Acc@5 16.434
+2021-04-28 20:23:57 INFO      * Acc@1 8.096 Acc@5 23.686
+2021-04-28 22:28:44 INFO      * Acc@1 12.086 Acc@5 31.016
+2021-04-29 03:41:46 INFO      * Acc@1 15.964 Acc@5 37.512
+2021-04-29 05:48:26 INFO      * Acc@1 19.340 Acc@5 43.012
+2021-04-29 07:55:11 INFO      * Acc@1 22.882 Acc@5 47.678
+2021-04-29 10:01:53 INFO      * Acc@1 26.342 Acc@5 52.064
+2021-04-29 12:08:35 INFO      * Acc@1 29.740 Acc@5 56.444
+2021-04-29 14:15:17 INFO      * Acc@1 32.588 Acc@5 59.332
+2021-04-29 16:22:01 INFO      * Acc@1 34.272 Acc@5 61.466
+2021-04-29 18:28:39 INFO      * Acc@1 36.504 Acc@5 63.414
+2021-04-29 20:35:25 INFO      * Acc@1 38.244 Acc@5 65.234
+```
 
 
 ## Experiment 3
