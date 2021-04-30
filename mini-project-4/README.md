@@ -1,7 +1,7 @@
 # ML Reproducibility Challenge
 We aim to reproduce: __Very Deep Convolutional Networks for Large-Scale Image Recognition__ by Karen Simonyan, and Andrew Zisserman. The paper can be found [here](https://arxiv.org/abs/1409.1556)
 
-* Report [link](https://www.overleaf.com/1897293349fjsssxwrwydb)
+
 
 ## Dependencies
 * Google Cloud Deep Learning VM with Pytorch 1.8. You should see in your terminal the `(base)` conda environment
