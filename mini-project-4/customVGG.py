@@ -7,14 +7,17 @@ import torchvision.models as models
 
 
 # python main.py /home/dataset/ILSVRC/Data/CLS-LOC --arch custom --keep-logs --batch-size 150 --print-freq 100
+# python main.py /home/dataset/ILSVRC/Data/CLS-LOC --batch-size 128 --arch custom --epoch 15 --learning-rate 0.001
 def create_custom_model():
-    model = models.vgg11(pretrained=True)
+    # model = models.vgg11(pretrained=True)
 
     # remove the last maxpool and conv layers
-    model.features = nn.Sequential(*[model.features[i] for i in range(16)])
+    # model.features = nn.Sequential(*[model.features[i] for i in range(16)])
+
+    model = vgg11(pretrained=True)
 
     logging.info(
-        f"""Model Config
+        f"""Model Config: *** KERNEL SIZE OF 5 ***
     {model}
     """
     )
